@@ -9,7 +9,7 @@ export default function HeroSection() {
         Build Apps with <span className="text-gradient">Natural Language</span>
       </h1>
       <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-        Just describe your idea, and let our AI handle the code, design, and deployment.
+        Your words. Our AI. Complete apps — built, designed, and deployed.
       </p>
       <div className="mt-8 w-full max-w-2xl">
         <PromptForm />

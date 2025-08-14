@@ -1,12 +1,14 @@
+import dynamic from 'next/dynamic';
 import Header from '@/components/landing/header';
 import HeroSection from '@/components/landing/hero-section';
-import HowItWorks from '@/components/landing/how-it-works';
-import ShowcaseSection from '@/components/landing/showcase-section';
-import FeaturesSection from '@/components/landing/features-section';
-import PipelineSection from '@/components/landing/pipeline-section';
-import CtaSection from '@/components/landing/cta-section';
-import Footer from '@/components/landing/footer';
 import BackgroundFx from '@/components/landing/background-fx';
+import Footer from '@/components/landing/footer';
+
+const HowItWorks = dynamic(() => import('@/components/landing/how-it-works'));
+const ShowcaseSection = dynamic(() => import('@/components/landing/showcase-section'));
+const FeaturesSection = dynamic(() => import('@/components/landing/features-section'));
+const PipelineSection = dynamic(() => import('@/components/landing/pipeline-section'));
+const CtaSection = dynamic(() => import('@/components/landing/cta-section'));
 
 export default function Home() {
   return (

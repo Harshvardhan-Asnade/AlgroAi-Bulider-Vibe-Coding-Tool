@@ -30,7 +30,7 @@ export default function ShowcaseSection() {
                                     <CardContent className="p-0 flex aspect-video items-center justify-center relative">
                                         <Image
                                             src={template.image}
-                                            alt={template.name}
+                                            alt={`AI-generated template for a ${template.name}`}
                                             width={600}
                                             height={400}
                                             className="transition-transform duration-300 group-hover:scale-105"
