@@ -1,68 +1,96 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { cn } from '@/lib/utils';
-import { Terminal } from 'lucide-react';
+import React, { useRef, useEffect } from 'react';
 
-const FloatingSnippet = ({ children, className, style }: { children: React.ReactNode, className?: string, style?: React.CSSProperties }) => (
-  <div
-    className={cn(
-      "absolute flex items-center gap-2 rounded-lg border border-primary/20 bg-background/50 p-2 text-xs text-primary/80 shadow-lg shadow-primary/10 backdrop-blur-sm",
-      className
-    )}
-    style={style}
-  >
-    {children}
-  </div>
-);
-
-export default function BackgroundFx() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+const BackgroundFx = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      setMousePosition({ x: event.clientX, y: event.clientY });
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const dots: Dot[] = [];
+    const numDots = 50;
+
+    class Dot {
+      x: number;
+      y: number;
+      z: number;
+      xProjected: number;
+      yProjected: number;
+      scaleProjected: number;
+      
+      constructor() {
+        this.x = Math.random() * width - width / 2;
+        this.y = Math.random() * height - height / 2;
+        this.z = Math.random() * width;
+        this.xProjected = 0;
+        this.yProjected = 0;
+        this.scaleProjected = 0;
+      }
+
+      project() {
+        this.z = this.z - 1;
+        if (this.z < 1) {
+          this.z = width;
+          this.x = Math.random() * width - width / 2;
+          this.y = Math.random() * height - height / 2;
+        }
+        this.scaleProjected = width / (width + this.z);
+        this.xProjected = this.x * this.scaleProjected + width / 2;
+        this.yProjected = this.y * this.scaleProjected + height / 2;
+      }
+
+      draw() {
+        this.project();
+        if(ctx) {
+            ctx.beginPath();
+            ctx.arc(
+              this.xProjected,
+              this.yProjected,
+              this.scaleProjected * 2,
+              0,
+              Math.PI * 2
+            );
+            ctx.fillStyle = `hsla(285, 100%, 41.4%, ${this.scaleProjected})`;
+            ctx.fill();
+        }
+      }
+    }
+
+    for (let i = 0; i < numDots; i++) {
+      dots.push(new Dot());
+    }
+
+    const render = () => {
+      if(ctx) {
+        ctx.fillStyle = 'hsl(276 46.3% 11.6%)';
+        ctx.fillRect(0, 0, width, height);
+      }
+      dots.forEach((dot) => dot.draw());
+      window.requestAnimationFrame(render);
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    render();
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
+      window.cancelAnimationFrame(0);
+      window.removeEventListener('resize', () => {});
     };
   }, []);
 
-  const parallaxStyle = (factor: number) => ({
-    transform: `translate(${mousePosition.x / -factor}px, ${mousePosition.y / -factor}px)`,
-  });
+  return <canvas ref={canvasRef} className="fixed inset-0 z-[-1] h-full w-full" />;
+};
 
-  return (
-    <>
-      <div
-        className="fixed inset-0 z-[-1] h-full w-full bg-background"
-        style={{
-          backgroundImage:
-            'linear-gradient(hsl(var(--border) / 0.5) 1px, transparent 1px), linear-gradient(to right, hsl(var(--border) / 0.5) 1px, hsl(var(--background)) 1px)',
-          backgroundSize: '4rem 4rem',
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/80 to-background" />
-      </div>
-      <div className="fixed inset-0 z-[-1] h-full w-full bg-gradient-to-b from-primary/10 via-transparent to-background" />
-
-      <div className="fixed inset-0 z-[-1] hidden transition-all duration-300 ease-out lg:block">
-        <FloatingSnippet className="left-[10%] top-[20%]" style={parallaxStyle(50)}>
-            <Terminal className="h-4 w-4" /> `npm install algroai`
-        </FloatingSnippet>
-        <FloatingSnippet className="right-[15%] top-[30%]" style={parallaxStyle(80)}>
-            `// Generating UI...`
-        </FloatingSnippet>
-        <FloatingSnippet className="left-[20%] top-[70%]" style={parallaxStyle(40)}>
-          {`<Button>Deploy</Button>`}
-        </FloatingSnippet>
-         <FloatingSnippet className="right-[10%] top-[85%]" style={parallaxStyle(60)}>
-          {`{ "status": "success" }`}
-        </FloatingSnippet>
-      </div>
-    </>
-  );
-}
+export default BackgroundFx;

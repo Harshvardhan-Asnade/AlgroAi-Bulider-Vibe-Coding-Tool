@@ -20,7 +20,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-headline bg-background antialiased">
+      <body className="font-body bg-background text-foreground antialiased">
         <CursorGlow />
         {children}
         <Toaster />

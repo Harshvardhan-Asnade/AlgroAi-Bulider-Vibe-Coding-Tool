@@ -12,16 +12,20 @@ export default function Home() {
   return (
     <div className="relative flex min-h-screen w-full flex-col items-center overflow-clip">
       <BackgroundFx />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background" />
       <Header />
       <main className="flex w-full flex-col items-center">
         <HeroSection />
+        {/* The following sections are now hidden to match the requested design */}
+        {/*
         <HowItWorks />
         <ShowcaseSection />
         <FeaturesSection />
         <PipelineSection />
         <CtaSection />
+        */}
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }
