@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Terminal } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 const FloatingSnippet = ({ children, className, style }: { children: React.ReactNode, className?: string, style?: React.CSSProperties }) => (
   <div
@@ -52,7 +51,7 @@ export default function BackgroundFx() {
 
       <div className="fixed inset-0 z-[-1] hidden transition-all duration-300 ease-out lg:block">
         <FloatingSnippet className="left-[10%] top-[20%]" style={parallaxStyle(50)}>
-            <Terminal className="h-4 w-4" /> `npm install vibecoder`
+            <Terminal className="h-4 w-4" /> `npm install algroai`
         </FloatingSnippet>
         <FloatingSnippet className="right-[15%] top-[30%]" style={parallaxStyle(80)}>
             `// Generating UI...`

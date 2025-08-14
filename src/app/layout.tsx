@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster"
 import CursorGlow from "@/components/landing/cursor-glow";
 
 export const metadata: Metadata = {
-  title: 'VibeCoder',
+  title: 'AlgroAI.build',
   description: 'Build apps through natural language with AI',
 };
 

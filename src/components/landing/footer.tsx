@@ -7,7 +7,7 @@ export default function Footer() {
             <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="flex items-center gap-2 text-xl font-bold text-gradient">
                     <CodeXml className="h-6 w-6 text-primary" />
-                    <Link href="/">VibeCoder</Link>
+                    <Link href="/">AlgroAI.build</Link>
                 </div>
                 <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} AlgroAI.build. All rights reserved.</p>
                 <div className="flex items-center gap-4">
