@@ -4,48 +4,48 @@
 
 @layer base {
   :root {
-    --background: 224 71.4% 4.1%;
+    --background: 261 41% 10%;
     --foreground: 210 40% 98%;
-    --card: 222 47.4% 11.2%;
+    --card: 261 41% 12%;
     --card-foreground: 210 40% 98%;
-    --popover: 222 47.4% 11.2%;
+    --popover: 261 41% 10%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
+    --primary: 285 100% 61%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 224 71% 20%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 224 71% 20%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 285 100% 41.4%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 185 100% 75%;
+    --accent-foreground: 261 41% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 217.2 91.2% 59.8%;
+    --border: 224 71% 20%;
+    --input: 224 71% 15%;
+    --ring: 285 100% 61%;
     --radius: 0.75rem;
   }
  
   .dark {
-    --background: 224 71.4% 4.1%;
+    --background: 261 41% 10%;
     --foreground: 210 40% 98%;
-    --card: 222 47.4% 11.2%;
+    --card: 261 41% 12%;
     --card-foreground: 210 40% 98%;
-    --popover: 222 47.4% 11.2%;
+    --popover: 261 41% 10%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
+    --primary: 285 100% 61%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 224 71% 20%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 224 71% 20%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 285 100% 41.4%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 185 100% 75%;
+    --accent-foreground: 261 41% 10%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 217.2 91.2% 59.8%;
+    --border: 224 71% 20%;
+    --input: 224 71% 15%;
+    --ring: 285 100% 61%;
   }
 }
 
@@ -56,9 +56,33 @@
   body {
     @apply bg-background text-foreground;
     overflow-x: hidden;
+    cursor: none;
   }
   html {
     @apply dark;
+  }
+  
+  svg#gooey-filter { 
+    display: none; 
+  }
+
+  #cursor {
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    filter: url("#goo");
+  }
+
+  #cursor span {
+    position: absolute;
+    display: block;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: white;
+    transform: translate(-50%, -50%);
   }
 }
 

@@ -1,7 +1,7 @@
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
-import CursorGlow from "@/components/landing/cursor-glow";
+import GooeyCursor from "@/components/landing/gooey-cursor";
 
 export const metadata: Metadata = {
   title: 'AlgroAI.build',
@@ -21,7 +21,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body bg-background text-foreground antialiased">
-        <CursorGlow />
+        <GooeyCursor />
         {children}
         <Toaster />
       </body>
