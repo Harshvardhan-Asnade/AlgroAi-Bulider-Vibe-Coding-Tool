@@ -61,15 +61,15 @@ export default function PromptForm() {
         <div className="relative group">
           <Textarea
             {...form.register('prompt')}
-            placeholder="How can Horizons help you today?"
-            className="min-h-[100px] text-base bg-foreground/5 border-2 border-foreground/10 focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:ring-2 backdrop-blur-sm transition-all duration-300 group-hover:border-primary/50 pl-12 pr-12 rounded-2xl"
+            placeholder="Describe your app idea... e.g., 'a photo sharing app with user profiles and comments'"
+            className="min-h-[100px] text-base bg-foreground/5 border-2 border-border/10 focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:ring-2 backdrop-blur-sm transition-all duration-300 group-hover:border-primary/50 pl-12 pr-12 rounded-2xl"
             rows={4}
           />
            <div className="absolute bottom-4 left-4 flex gap-2 text-muted-foreground">
-             <button type="button" className="hover:text-white"><LinkIcon className="h-5 w-5"/></button>
-             <button type="button" className="hover:text-white"><Mic className="h-5 w-5"/></button>
+             <button type="button" className="hover:text-primary transition-colors"><LinkIcon className="h-5 w-5"/></button>
+             <button type="button" className="hover:text-primary transition-colors"><Mic className="h-5 w-5"/></button>
            </div>
-           <Button type="submit" disabled={isLoading} size="icon" className="absolute bottom-3 right-3 h-8 w-8 bg-primary hover:bg-primary/90">
+           <Button type="submit" disabled={isLoading} size="icon" className="absolute bottom-3 right-3 h-8 w-8 bg-primary hover:bg-primary/90 rounded-full glow-shadow-primary transition-all hover:scale-110">
                 {isLoading ? <Loader2 className="animate-spin" /> : <ArrowRight className="h-5 w-5"/>}
            </Button>
         </div>
@@ -101,7 +101,7 @@ export default function PromptForm() {
                 <div>
                     <Card className="bg-transparent border-none shadow-none">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><Wand2/> Generated Code</CardTitle>
+                            <CardTitle className="flex items-center gap-2"><Wand2 className="text-accent glow-shadow-accent"/> Generated Code</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <pre className="bg-black/50 p-4 rounded-lg overflow-x-auto text-sm font-code">
@@ -113,7 +113,7 @@ export default function PromptForm() {
                  <div>
                     <Card className="bg-transparent border-none shadow-none">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><ShieldCheck/> Security Analysis</CardTitle>
+                            <CardTitle className="flex items-center gap-2"><ShieldCheck className="text-primary glow-shadow-primary"/> Security Analysis</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
                            <Alert className="bg-primary/5 border-primary/20">
