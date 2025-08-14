@@ -62,13 +62,9 @@ export default function PromptForm() {
           <Textarea
             {...form.register('prompt')}
             placeholder="Describe your app idea... e.g., 'a photo sharing app with user profiles and comments'"
-            className="min-h-[100px] text-base bg-foreground/5 border-2 border-border/10 focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:ring-2 backdrop-blur-sm transition-all duration-300 group-hover:border-primary/50 pl-12 pr-12 rounded-2xl"
+            className="min-h-[100px] text-base bg-foreground/5 border-2 border-border/10 focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:ring-2 backdrop-blur-sm transition-all duration-300 group-hover:border-primary/50 pr-12 rounded-2xl"
             rows={4}
           />
-           <div className="absolute bottom-4 left-4 flex gap-2 text-muted-foreground">
-             <button type="button" className="hover:text-primary transition-colors"><LinkIcon className="h-5 w-5"/></button>
-             <button type="button" className="hover:text-primary transition-colors"><Mic className="h-5 w-5"/></button>
-           </div>
            <Button type="submit" disabled={isLoading} size="icon" className="absolute bottom-3 right-3 h-8 w-8 bg-primary hover:bg-primary/90 rounded-full glow-shadow-primary transition-all hover:scale-110">
                 {isLoading ? <Loader2 className="animate-spin" /> : <ArrowRight className="h-5 w-5"/>}
            </Button>
@@ -81,7 +77,7 @@ export default function PromptForm() {
       </form>
 
       <Dialog open={!!result || !!error} onOpenChange={() => { setResult(null); setError(null); }}>
-        <DialogContent className="max-w-4xl bg-background/80 backdrop-blur-md border-primary/30">
+        <DialogContent className="max-w-5xl h-[80vh] bg-background/80 backdrop-blur-md border-primary/30 flex flex-col">
           <DialogHeader>
             <DialogTitle className="text-gradient">
               {error ? 'An Error Occurred' : 'Generation Complete!'}
@@ -97,14 +93,14 @@ export default function PromptForm() {
             </Alert>
           )}
           {result && (
-            <div className="grid md:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto mt-4 p-1">
+            <div className="grid md:grid-cols-2 gap-6 flex-1 overflow-y-auto mt-4 p-1">
                 <div>
-                    <Card className="bg-transparent border-none shadow-none">
+                    <Card className="bg-transparent border-none shadow-none h-full">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2"><Wand2 className="text-accent glow-shadow-accent"/> Generated Code</CardTitle>
                         </CardHeader>
-                        <CardContent>
-                            <pre className="bg-black/50 p-4 rounded-lg overflow-x-auto text-sm font-code">
+                        <CardContent className="h-full">
+                            <pre className="bg-black/50 p-4 rounded-lg overflow-auto text-sm font-code h-[calc(100%-4rem)]">
                                 <code>{result.code}</code>
                             </pre>
                         </CardContent>
