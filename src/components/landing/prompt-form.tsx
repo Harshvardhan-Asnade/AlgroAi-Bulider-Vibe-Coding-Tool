@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from 'react';
+import { useState, useRef, useEffect, ChangeEvent } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -34,11 +35,21 @@ export default function PromptForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<GenerationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: { prompt: "" },
   });
+
+  const handleTextareaChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    form.setValue('prompt', event.target.value);
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setIsLoading(true);
@@ -54,6 +65,13 @@ export default function PromptForm() {
     }
     setIsLoading(false);
   };
+  
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if(textarea) {
+        textarea.style.height = 'auto';
+    }
+  }, [])
 
   return (
     <>
@@ -61,9 +79,11 @@ export default function PromptForm() {
         <div className="relative group">
           <Textarea
             {...form.register('prompt')}
+            ref={textareaRef}
             placeholder="Type your idea and we'll bring it to life (or/command))"
-            className="min-h-[100px] text-base bg-foreground/5 border-2 border-border/10 focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:ring-2 backdrop-blur-sm transition-all duration-300 group-hover:border-primary/50 pr-12 rounded-2xl"
-            rows={4}
+            className="text-base bg-foreground/5 border-2 border-border/10 focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:ring-2 backdrop-blur-sm transition-all duration-300 group-hover:border-primary/50 pr-12 rounded-2xl resize-none overflow-hidden"
+            rows={1}
+            onChange={handleTextareaChange}
           />
            <Button type="submit" disabled={isLoading} size="icon" className="absolute bottom-3 right-3 h-8 w-8 bg-primary hover:bg-primary/90 rounded-full glow-shadow-primary transition-all hover:scale-110">
                 {isLoading ? <Loader2 className="animate-spin" /> : <ArrowRight className="h-5 w-5"/>}
