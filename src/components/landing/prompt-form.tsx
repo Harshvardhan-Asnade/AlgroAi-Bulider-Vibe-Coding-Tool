@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Loader2, ShieldCheck, Wand2, Mic, Link as LinkIcon } from 'lucide-react';
+import { ArrowRight, Loader2, ShieldCheck, Wand2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
@@ -61,7 +61,7 @@ export default function PromptForm() {
         <div className="relative group">
           <Textarea
             {...form.register('prompt')}
-            placeholder="Describe your app idea... e.g., 'a photo sharing app with user profiles and comments'"
+            placeholder="Type your idea and we'll bring it to life (or/command))"
             className="min-h-[100px] text-base bg-foreground/5 border-2 border-border/10 focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:ring-2 backdrop-blur-sm transition-all duration-300 group-hover:border-primary/50 pr-12 rounded-2xl"
             rows={4}
           />
