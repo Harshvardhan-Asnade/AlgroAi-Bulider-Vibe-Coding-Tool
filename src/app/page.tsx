@@ -16,16 +16,13 @@ export default function Home() {
       <Header />
       <main className="flex w-full flex-col items-center">
         <HeroSection />
-        {/* The following sections are now hidden to match the requested design */}
-        {/*
         <HowItWorks />
         <ShowcaseSection />
         <FeaturesSection />
         <PipelineSection />
         <CtaSection />
-        */}
       </main>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }
