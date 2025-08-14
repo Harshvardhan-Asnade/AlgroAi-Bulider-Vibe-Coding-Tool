@@ -16,7 +16,7 @@ export default function Home() {
       <BackgroundFx />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background" />
       <Header />
-      <main className="flex w-full flex-col items-center">
+      <main className="flex w-full flex-col items-center z-10">
         <HeroSection />
         <HowItWorks />
         <ShowcaseSection />
