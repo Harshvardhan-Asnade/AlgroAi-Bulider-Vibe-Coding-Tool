@@ -12,6 +12,9 @@ export default function Header() {
           <Badge variant="outline" className="text-xs border-primary/50 text-primary animate-pulse">Beta</Badge>
         </Link>
       </div>
+      <div className="text-sm text-muted-foreground">
+        (version 0.1)
+      </div>
       <div className="flex items-center gap-4">
         <Link href="/chat">
           <Button className="bg-gradient-to-r from-primary to-accent/80 text-primary-foreground hover:shadow-lg hover:shadow-primary/40 transition-all duration-300 transform hover:scale-105">
