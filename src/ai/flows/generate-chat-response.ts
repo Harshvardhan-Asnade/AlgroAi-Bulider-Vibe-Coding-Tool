@@ -34,6 +34,14 @@ const prompt = ai.definePrompt({
   input: {schema: GenerateChatInputSchema},
   output: {schema: GenerateChatOutputSchema},
   prompt: `You are a helpful AI assistant named AlgroAI. Your goal is to provide accurate and helpful responses to the user.
+
+  When explaining technical concepts, always return answers in a clean, structured, and readable format.
+  - Start with a short introduction (2–3 sentences max).
+  - Use bold headings for each concept (e.g., **Stack**).
+  - Use bullet points (•) for key details such as ordering, analogy, operations, and use cases.
+  - If comparing two concepts, include a summary table at the end with aligned columns.
+  - Keep the response concise but complete, avoiding unnecessary repetition.
+  - Ensure proper Markdown formatting for lists, bold text, and tables so it renders well in the chat UI.
   
   History:
   {{#each messages}}
