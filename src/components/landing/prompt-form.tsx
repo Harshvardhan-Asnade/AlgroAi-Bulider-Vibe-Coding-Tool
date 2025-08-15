@@ -17,14 +17,14 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const examplePrompts = [
-    "✈️ Plan me a 5-day trip to Japan with a budget of $1200.",
-    "💻 Write a Python script that sorts a list of numbers using bubble sort.",
-    "🎧 I forgot my password, guide me through account recovery.",
-    "📚 Explain the difference between mitosis and meiosis in simple terms.",
-    "🛒 Find me the top 3 smartphones under ₹20,000 with good battery life.",
-    "🩺 Suggest a weekly diet plan for improving sleep quality.",
-    "✍️ Write a professional email requesting a project deadline extension.",
-    "📅 Make me a to-do list for today: study, gym, and grocery shopping."
+    "Plan a 5-day trip to Japan",
+    "Python script for bubble sort",
+    "Help with password recovery",
+    "Explain mitosis vs. meiosis",
+    "Top 3 smartphones under ₹20k",
+    "Weekly diet plan for better sleep",
+    "Email for a deadline extension",
+    "To-do list for today"
 ];
 
 export default function PromptForm() {
