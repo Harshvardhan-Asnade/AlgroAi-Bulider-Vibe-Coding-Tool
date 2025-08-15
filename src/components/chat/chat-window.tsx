@@ -15,7 +15,7 @@ import remarkGfm from 'remark-gfm';
 interface ChatWindowProps {
     activeConversation: Conversation | null;
     isLoading: boolean;
-    onSendMessage: (message: string) => Promise<void>;
+    onSendMessage: (message: string, isNewChat?: boolean) => Promise<void>;
     onNewChat: () => void;
 }
 
@@ -23,13 +23,13 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
     const [input, setInput] = useState('');
     const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-    const handleSendMessage = async (e: React.FormEvent) => {
+    const handleSendMessageSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!input.trim() || isLoading) return;
         
         const messageToSend = input;
         setInput('');
-        await onSendMessage(messageToSend);
+        await onSendMessage(messageToSend, !activeConversation);
     };
 
      useEffect(() => {
@@ -45,14 +45,12 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
     }, [activeConversation?.messages, isLoading]);
 
 
-    const handleInitialSend = (message: string) => {
+    const handleInitialSend = async (prompt: string) => {
         onNewChat();
+        // Use a timeout to ensure the new chat state is set before sending message
         setTimeout(() => {
-            handleSendMessage({
-                preventDefault: () => {},
-                target: { value: message }
-            } as any);
-        }, 100)
+            onSendMessage(prompt, true);
+        }, 0);
     }
 
     // Placeholder for when there's no active conversation
@@ -87,7 +85,7 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
                       </div>
                 </div>
                 <div className="p-4 border-t border-border/10 bg-background/50 backdrop-blur-sm">
-                    <form id="chat-form" onSubmit={handleSendMessage} className="relative">
+                    <form id="chat-form" onSubmit={handleSendMessageSubmit} className="relative">
                         <Input
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
@@ -154,7 +152,7 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
                 </div>
             </ScrollArea>
             <div className="p-4 border-t border-border/10 bg-background/50 backdrop-blur-sm">
-                <form id="chat-form" onSubmit={handleSendMessage} className="relative">
+                <form id="chat-form" onSubmit={handleSendMessageSubmit} className="relative">
                     <Input
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
