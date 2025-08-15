@@ -20,23 +20,23 @@ const spaceMono = Space_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'AlgroAI.build - Build Apps with Natural Language',
-    template: '%s | AlgroAI.build',
+    default: 'AlgroChat.Ai - Your Intelligent Chat Companion',
+    template: '%s | AlgroChat.Ai',
   },
-  description: 'Describe your idea, and let our AI handle the code, design, and deployment. Your words. Our AI. Complete apps — built, designed, and deployed.',
-  keywords: ['AI', 'App Builder', 'Natural Language', 'Code Generation', 'Next.js', 'React', 'Firebase'],
-  authors: [{ name: 'AlgroAI', url: 'https://algroai.build' }],
+  description: 'AlgroChat.Ai is your intelligent chat companion, ready to assist with everything from coding to conversation. Experience the future of AI chat.',
+  keywords: ['AI', 'Chatbot', 'Intelligent Assistant', 'Natural Language', 'Code Generation', 'Next.js', 'React', 'Firebase'],
+  authors: [{ name: 'AlgroChat.Ai', url: 'https://algrochat.ai' }],
   openGraph: {
-    title: 'AlgroAI.build - Build Apps with Natural Language',
-    description: 'Describe your idea, and let our AI handle the code, design, and deployment. Your words. Our AI. Complete apps — built, designed, and deployed.',
-    url: 'https://algroai.build',
-    siteName: 'AlgroAI.build',
+    title: 'AlgroChat.Ai - Your Intelligent Chat Companion',
+    description: 'AlgroChat.Ai is your intelligent chat companion, ready to assist with everything from coding to conversation. Experience the future of AI chat.',
+    url: 'https://algrochat.ai',
+    siteName: 'AlgroChat.Ai',
     images: [
       {
-        url: 'https://placehold.co/1200x630.png', // Replace with actual OG image
+        url: 'https://placehold.co/1200x630.png', 
         width: 1200,
         height: 630,
-        alt: 'AlgroAI.build platform interface',
+        alt: 'AlgroChat.Ai platform interface',
       },
     ],
     locale: 'en_US',
@@ -44,9 +44,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AlgroAI.build - Build Apps with Natural Language',
-    description: 'Describe your idea, and let our AI handle the code, design, and deployment. Your words. Our AI. Complete apps — built, designed, and deployed.',
-    images: ['https://placehold.co/1200x630.png'], // Replace with actual Twitter image
+    title: 'AlgroChat.Ai - Your Intelligent Chat Companion',
+    description: 'AlgroChat.Ai is your intelligent chat companion, ready to assist with everything from coding to conversation. Experience the future of AI chat.',
+    images: ['https://placehold.co/1200x630.png'], 
   },
 };
 

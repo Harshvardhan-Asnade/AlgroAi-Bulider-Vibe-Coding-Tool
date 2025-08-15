@@ -11,7 +11,7 @@ export default function Footer() {
                         <Logo className="h-7 w-auto" />
                     </Link>
                 </div>
-                <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} AlgroAI.build. All rights reserved.</p>
+                <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} AlgroChat.Ai. All rights reserved.</p>
                 <div className="flex items-center gap-4">
                     <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors"><Twitter /></a>
                     <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors"><Github /></a>
