@@ -47,7 +47,7 @@ function TypingEffect({ text }: { text: string }) {
     return <ReactMarkdown remarkPlugins={[remarkGfm]}>{displayedText}</ReactMarkdown>;
 }
 
-function WelcomeScreen({ onSendMessage, isLoading }: { onSendMessage: ChatWindowProps['onSendMessage'], isLoading: boolean }) {
+function WelcomeScreen({ onPromptClick }: { onPromptClick: (prompt: string) => void }) {
     return (
         <div className="flex-1 flex flex-col justify-center items-center p-4 md:p-8 bg-background">
              <div className="max-w-3xl mx-auto w-full text-center">
@@ -76,9 +76,8 @@ function WelcomeScreen({ onSendMessage, isLoading }: { onSendMessage: ChatWindow
                          animate={{ opacity: 1, y: 0 }}
                          transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
                          whileHover={{ y: -5, boxShadow: '0px 10px 20px hsla(var(--primary) / 0.1)' }}
-                         onClick={() => onSendMessage(prompt.text, true)}
-                         disabled={isLoading}
-                         className="text-left p-4 rounded-xl border border-border/20 bg-secondary/30 hover:bg-secondary/80 transition-all disabled:opacity-50"
+                         onClick={() => onPromptClick(prompt.text)}
+                         className="text-left p-4 rounded-xl border border-border/20 bg-secondary/30 hover:bg-secondary/80 transition-all"
                        >
                           <div className="flex items-center gap-3">
                             <prompt.icon className="h-5 w-5 text-primary" />
@@ -224,13 +223,25 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
         await onSendMessage(messageToSend, !activeConversation);
     };
 
+    const handlePromptClick = (prompt: string) => {
+        if (isLoading) return;
+        setInput(prompt);
+        // We need a small delay to allow React to update the input's value
+        // before we programmatically submit the form.
+        setTimeout(() => {
+            document.getElementById('chat-form')?.requestSubmit();
+        }, 100);
+    }
+
     return (
         <div className="flex flex-col h-full bg-background">
-            {activeConversation ? (
-                <ActiveChat conversation={activeConversation} isLoading={isLoading} />
-            ) : (
-                <WelcomeScreen onSendMessage={onSendMessage} isLoading={isLoading} />
-            )}
+            <div className="flex-1 flex flex-col overflow-hidden">
+                {activeConversation ? (
+                    <ActiveChat conversation={activeConversation} isLoading={isLoading} />
+                ) : (
+                    <WelcomeScreen onPromptClick={handlePromptClick} />
+                )}
+            </div>
             <div className="p-4 border-t border-border/10 bg-transparent">
                  <form id="chat-form" onSubmit={handleSendMessageSubmit} className="relative max-w-3xl mx-auto">
                     <Input
