@@ -58,11 +58,11 @@ export default function ChatContainer() {
         }
      }, [activeConversationId]);
     
-    const createNewConversation = useCallback((title: string = 'New Chat', initialMessage?: Message) => {
+    const createNewConversation = useCallback(() => {
         const newConversation: Conversation = {
             id: Date.now().toString(),
-            title: title,
-            messages: initialMessage ? [initialMessage] : [],
+            title: 'New Chat',
+            messages: [],
             isAutoTitled: true,
         };
         setConversations(prev => [newConversation, ...prev]);
@@ -70,37 +70,13 @@ export default function ChatContainer() {
         return newConversation;
     }, []);
 
-    const handleInitialPrompt = useCallback(async (prompt: string) => {
-        setIsLoading(true);
-        const userMessage: Message = { id: Date.now().toString(), role: 'user', content: prompt };
-        
-        const newConversation = createNewConversation('New Chat', userMessage);
-
-        const historyForApi = [{ role: 'user' as const, content: prompt }];
-        const [response, summaryResponse] = await Promise.all([
-            handleChat({ messages: historyForApi }),
-            handleSummarize({ message: prompt })
-        ]);
-
-        if (summaryResponse.success && summaryResponse.data) {
-            setConversations(prev => prev.map(c => 
-                c.id === newConversation.id ? { ...c, title: summaryResponse.data.title, isAutoTitled: true } : c
-            ));
+    const handleInitialPrompt = useCallback((prompt: string) => {
+        // This function will now leverage the main `handleSendMessage`
+        // to ensure consistent behavior including auto-titling.
+        if (conversations.length === 0) {
+             handleSendMessage(prompt, true);
         }
-
-        if (response.success && response.data) {
-            const botMessage: Message = { id: (Date.now() + 1).toString(), role: 'model', content: response.data.response };
-            setConversations(prev => prev.map(c => 
-                c.id === newConversation.id ? { ...c, messages: [...c.messages, botMessage] } : c
-            ));
-        } else {
-            const errorMessage: Message = { id: (Date.now() + 1).toString(), role: 'model', content: response.error || "Sorry, something went wrong." };
-            setConversations(prev => prev.map(c => 
-                c.id === newConversation.id ? { ...c, messages: [...c.messages, errorMessage] } : c
-            ));
-        }
-        setIsLoading(false);
-    }, [createNewConversation]);
+    }, [conversations.length]);
 
     useEffect(() => {
         const initialPrompt = searchParams.get('prompt');
@@ -109,21 +85,23 @@ export default function ChatContainer() {
         }
     }, [searchParams, conversations.length, handleInitialPrompt]);
 
-    const handleSendMessage = async (message: string) => {
+    const handleSendMessage = async (message: string, isNewChat: boolean = false) => {
         let currentConversationId = activeConversationId;
         
-        const currentConvoBeforeUpdate = conversations.find(c => c.id === currentConversationId);
-        const isFirstMessage = !currentConvoBeforeUpdate || currentConvoBeforeUpdate.messages.length === 0;
-
-        if (!currentConversationId) {
+        // If it's a new chat or there's no active conversation, create one.
+        if (isNewChat || !currentConversationId) {
             const newConversation = createNewConversation();
             currentConversationId = newConversation.id;
         }
 
         if (!currentConversationId) return; // Should not happen
 
+        const currentConvo = conversations.find(c => c.id === currentConversationId);
+        const isFirstMessage = !currentConvo || currentConvo.messages.length === 0;
+
         const userMessage: Message = { id: Date.now().toString(), role: 'user', content: message };
 
+        // Immediately update the UI with the user's message
         setConversations(prev =>
             prev.map(c =>
                 c.id === currentConversationId ? { ...c, messages: [...c.messages, userMessage] } : c
@@ -131,25 +109,28 @@ export default function ChatContainer() {
         );
         setIsLoading(true);
 
+        // We need to get the latest history for the API call
         const updatedHistory = (conversations.find(c => c.id === currentConversationId)?.messages || []).concat(userMessage);
         const historyForApi = updatedHistory.map(msg => ({ role: msg.role, content: msg.content }));
         
         const chatPromise = handleChat({ messages: historyForApi });
         
-        const shouldSummarize = isFirstMessage && currentConvoBeforeUpdate?.isAutoTitled;
+        const shouldSummarize = isFirstMessage && currentConvo?.isAutoTitled;
         
         const summaryPromise = shouldSummarize
             ? handleSummarize({ message: message })
             : Promise.resolve(null);
 
         const [response, summaryResponse] = await Promise.all([chatPromise, summaryPromise]);
-
+        
+        // Update title if summarization was successful
         if (summaryResponse && summaryResponse.success && summaryResponse.data) {
              setConversations(prev => prev.map(c => 
                 c.id === currentConversationId ? { ...c, title: summaryResponse.data.title, isAutoTitled: true } : c
             ));
         }
         
+        // Update with the bot's response or error
         if (response.success && response.data) {
             const botMessage: Message = { id: (Date.now() + 1).toString(), role: 'model', content: response.data.response };
             setConversations(prev =>
@@ -208,7 +189,7 @@ export default function ChatContainer() {
             <ChatWindow 
                 activeConversation={activeConversation}
                 isLoading={isLoading}
-                onSendMessage={handleSendMessage}
+                onSendMessage={(message) => handleSendMessage(message, !activeConversationId)}
                 onNewChat={handleNewChat}
             />
         </ChatLayout>
