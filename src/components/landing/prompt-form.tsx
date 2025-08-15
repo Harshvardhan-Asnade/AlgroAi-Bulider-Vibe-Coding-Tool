@@ -17,10 +17,14 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const examplePrompts = [
-    "AI travel agent",
-    "Code-generation bot",
-    "Customer support chatbot",
-    "AI-powered personal tutor"
+    "✈️ Plan me a 5-day trip to Japan with a budget of $1200.",
+    "💻 Write a Python script that sorts a list of numbers using bubble sort.",
+    "🎧 I forgot my password, guide me through account recovery.",
+    "📚 Explain the difference between mitosis and meiosis in simple terms.",
+    "🛒 Find me the top 3 smartphones under ₹20,000 with good battery life.",
+    "🩺 Suggest a weekly diet plan for improving sleep quality.",
+    "✍️ Write a professional email requesting a project deadline extension.",
+    "📅 Make me a to-do list for today: study, gym, and grocery shopping."
 ];
 
 export default function PromptForm() {
@@ -50,8 +54,13 @@ export default function PromptForm() {
 
   const handleExampleClick = (prompt: string) => {
     form.setValue('prompt', prompt);
-    // Manually trigger form submission
-    form.handleSubmit(onSubmit)();
+    const textarea = textareaRef.current;
+    if (textarea) {
+        setTimeout(() => {
+            textarea.style.height = 'auto';
+            textarea.style.height = `${textarea.scrollHeight}px`;
+        }, 0);
+    }
   };
   
   useEffect(() => {
@@ -98,14 +107,14 @@ export default function PromptForm() {
             <p className="text-sm text-destructive">{form.formState.errors.prompt.message}</p>
         )}
       </form>
-       <div className="mt-8 flex flex-wrap justify-center items-center gap-2 max-w-3xl">
-          <span className="text-sm text-muted-foreground mr-2">Examples:</span>
+       <div className="mt-8 flex flex-wrap justify-center items-start gap-2 max-w-4xl">
+          <span className="text-sm text-muted-foreground mr-2 mt-1.5">Examples:</span>
           {examplePrompts.map((prompt) => (
             <button
                 key={prompt}
                 onClick={() => handleExampleClick(prompt)}
                 disabled={isLoading}
-                className="text-sm text-muted-foreground hover:text-primary hover:border-primary/50 border border-muted-foreground/20 rounded-full px-3 py-1 transition-colors disabled:opacity-50 disabled:pointer-events-none"
+                className="text-sm text-left text-muted-foreground hover:text-primary hover:border-primary/50 border border-muted-foreground/20 rounded-lg px-3 py-1 transition-colors disabled:opacity-50 disabled:pointer-events-none"
             >
                 {prompt}
             </button>
