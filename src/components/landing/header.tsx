@@ -10,12 +10,6 @@ export default function Header() {
           <Logo className="h-8 w-auto glow-shadow-primary" />
         </Link>
       </div>
-      <div className="flex items-center gap-2 sm:gap-4">
-        <Button variant="ghost">
-          Feedback
-        </Button>
-        <Button className="glow-shadow-primary transition-all duration-300 hover:glow-shadow-accent">Get Started</Button>
-      </div>
     </header>
   );
 }
