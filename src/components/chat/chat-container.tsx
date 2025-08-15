@@ -63,7 +63,7 @@ export default function ChatContainer() {
             id: Date.now().toString(),
             title: title,
             messages: initialMessage ? [initialMessage] : [],
-            isAutoTitled: !initialMessage, // if there's an initial message, it's not auto-titled yet
+            isAutoTitled: true,
         };
         setConversations(prev => [newConversation, ...prev]);
         setActiveConversationId(newConversation.id);
@@ -111,15 +111,13 @@ export default function ChatContainer() {
 
     const handleSendMessage = async (message: string) => {
         let currentConversationId = activeConversationId;
-        let isFirstMessage = false;
+        
+        const currentConvoBeforeUpdate = conversations.find(c => c.id === currentConversationId);
+        const isFirstMessage = !currentConvoBeforeUpdate || currentConvoBeforeUpdate.messages.length === 0;
 
         if (!currentConversationId) {
             const newConversation = createNewConversation();
             currentConversationId = newConversation.id;
-            isFirstMessage = true;
-        } else {
-            const currentConvo = conversations.find(c => c.id === currentConversationId);
-            isFirstMessage = currentConvo?.messages.length === 0;
         }
 
         if (!currentConversationId) return; // Should not happen
@@ -133,14 +131,12 @@ export default function ChatContainer() {
         );
         setIsLoading(true);
 
-        // We need to get the latest state of the conversation for the API call
-        const updatedHistory = conversations.find(c => c.id === currentConversationId)?.messages || [];
-        const historyForApi = [...updatedHistory, userMessage].map(msg => ({ role: msg.role, content: msg.content }));
+        const updatedHistory = (conversations.find(c => c.id === currentConversationId)?.messages || []).concat(userMessage);
+        const historyForApi = updatedHistory.map(msg => ({ role: msg.role, content: msg.content }));
         
         const chatPromise = handleChat({ messages: historyForApi });
         
-        const currentConversation = conversations.find(c => c.id === currentConversationId);
-        const shouldSummarize = isFirstMessage && currentConversation?.isAutoTitled;
+        const shouldSummarize = isFirstMessage && currentConvoBeforeUpdate?.isAutoTitled;
         
         const summaryPromise = shouldSummarize
             ? handleSummarize({ message: message })
