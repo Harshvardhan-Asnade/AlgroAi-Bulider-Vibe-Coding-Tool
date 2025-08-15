@@ -8,10 +8,9 @@ export default function Logo({ className }: { className?: string }) {
         className
       )}
     >
-      <span className="text-primary">Algro</span>
-      <span className="text-foreground">Ai</span>
-      <span className="absolute -inset-1 block transform-gpu rounded-lg bg-gradient-to-r from-primary to-accent opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:blur-md" />
-      <span className="absolute inset-0 block h-full w-full transform-gpu rounded-lg bg-gradient-to-r from-primary to-accent opacity-0 transition-all duration-500 group-hover:opacity-25" />
+      <span className="animate-shine bg-[linear-gradient(110deg,hsl(var(--foreground))_30%,45%,55%,hsl(var(--foreground))_70%)] bg-[length:250%_100%] bg-clip-text text-transparent">
+         Algro<span className="text-primary">Ai</span>
+      </span>
     </div>
   );
 }
