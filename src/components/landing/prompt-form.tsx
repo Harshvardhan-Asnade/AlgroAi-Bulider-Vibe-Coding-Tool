@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useRef, useEffect, ChangeEvent } from 'react';
+import { useState, useRef, useEffect, ChangeEvent, KeyboardEvent } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -43,6 +43,7 @@ export default function PromptForm() {
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    if(!data.prompt.trim()) return;
     setIsLoading(true);
     router.push(`/chat?prompt=${encodeURIComponent(data.prompt)}`);
   };
@@ -67,6 +68,13 @@ export default function PromptForm() {
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   }, [form.watch('prompt')]);
+  
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      form.handleSubmit(onSubmit)();
+    }
+  };
 
   return (
     <>
@@ -79,6 +87,7 @@ export default function PromptForm() {
             className="text-base bg-foreground/5 border-2 border-border/10 focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:ring-2 backdrop-blur-sm transition-all duration-300 group-hover:border-primary/50 pr-12 rounded-2xl resize-none overflow-hidden"
             rows={1}
             onChange={handleTextareaChange}
+            onKeyDown={handleKeyDown}
           />
            <Button type="submit" disabled={isLoading} size="icon" className="absolute bottom-3 right-3 h-8 w-8 bg-primary hover:bg-primary/90 rounded-full glow-shadow-primary transition-all hover:scale-110">
                 {isLoading ? <Loader2 className="animate-spin" /> : <ArrowRight className="h-5 w-5"/>}
