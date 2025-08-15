@@ -7,7 +7,6 @@ import Header from '@/components/landing/header';
 import HeroSection from '@/components/landing/hero-section';
 import Footer from '@/components/landing/footer';
 import HowItWorks from '@/components/landing/how-it-works';
-import ShowcaseSection from '@/components/landing/showcase-section';
 import FeaturesSection from '@/components/landing/features-section';
 import PipelineSection from '@/components/landing/pipeline-section';
 import CtaSection from '@/components/landing/cta-section';
@@ -44,7 +43,6 @@ export default function Home() {
         <main className="flex w-full flex-col items-center z-10">
           <HeroSection />
           <HowItWorks />
-          <ShowcaseSection />
           <FeaturesSection />
           <PipelineSection />
           <CtaSection />
