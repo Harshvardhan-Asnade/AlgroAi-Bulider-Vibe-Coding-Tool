@@ -50,7 +50,7 @@ export default function IntroAnimation() {
         <Logo className="text-7xl md:text-8xl lg:text-9xl" />
       </motion.div>
       <motion.div variants={bylineVariants} className="mt-4 text-center">
-        <p className="text-lg text-muted-foreground tracking-widest">by Harsh</p>
+        <p className="text-lg text-muted-foreground tracking-widest">By Harshvardhan Asnade</p>
       </motion.div>
     </motion.div>
   );
