@@ -4,11 +4,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Bot, User, Sparkles, MessageSquare } from 'lucide-react';
+import { ArrowRight, User, Sparkles, MessageSquare } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { Conversation, Message } from './chat-container';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface ChatWindowProps {
     activeConversation: Conversation | null;
@@ -25,19 +27,6 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
         e.preventDefault();
         if (!input.trim() || isLoading) return;
         
-        // If there's no active conversation, create one.
-        if (!activeConversation) {
-            onNewChat(); 
-            // We need to wait for the state update to propagate before sending the message.
-            // A simple way is to send the message in a useEffect that triggers when activeConversation changes.
-            // However, a cleaner approach is to handle this logic in the container.
-            // For now, we'll send the message right after a slight delay, assuming the new chat is created.
-            // A better implementation would involve passing the message to onNewChat.
-            setTimeout(() => onSendMessage(input), 0);
-            setInput('');
-            return;
-        }
-
         const messageToSend = input;
         setInput('');
         await onSendMessage(messageToSend);
@@ -53,18 +42,42 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
                 });
             }
         }
-    }, [activeConversation?.messages]);
+    }, [activeConversation?.messages, isLoading]);
 
+
+    const handleInitialSend = (message: string) => {
+        setInput(message);
+        // We need to wait for the state update before submitting
+        setTimeout(() => {
+            const form = document.getElementById('chat-form') as HTMLFormElement;
+            form?.requestSubmit();
+        }, 0);
+    }
+    
+    // Placeholder for when there's no active conversation
     if (!activeConversation) {
         return (
             <div className="flex-1 flex flex-col">
-                 <div className="flex flex-1 flex-col items-center justify-center text-center">
+                 <div className="flex flex-1 flex-col items-center justify-center text-center p-4">
                     <MessageSquare size={48} className="text-muted-foreground mb-4" />
                     <h2 className="text-2xl font-semibold font-headline">Start a Conversation</h2>
-                    <p className="text-muted-foreground mt-2">Send a message to begin.</p>
+                    <p className="text-muted-foreground mt-2 max-w-md">You can ask me anything, from explaining complex topics to helping you write code.</p>
+                     <div className="mt-8 flex flex-wrap justify-center items-center gap-2 max-w-3xl">
+                          <span className="text-sm text-muted-foreground mr-2">Try an example:</span>
+                          {["Explain quantum computing", "How does a blockchain work?", "Write a Python script for web scraping"].map((prompt) => (
+                            <button
+                                key={prompt}
+                                onClick={() => handleInitialSend(prompt)}
+                                disabled={isLoading}
+                                className="text-sm text-muted-foreground hover:text-primary hover:border-primary/50 border border-muted-foreground/20 rounded-full px-3 py-1 transition-colors disabled:opacity-50 disabled:pointer-events-none"
+                            >
+                                {prompt}
+                            </button>
+                          ))}
+                      </div>
                 </div>
                 <div className="p-4 border-t border-border/10 bg-background/50 backdrop-blur-sm">
-                    <form onSubmit={handleSendMessage} className="relative">
+                    <form id="chat-form" onSubmit={handleSendMessage} className="relative">
                         <Input
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
@@ -94,10 +107,15 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
                                 </Avatar>
                             )}
                             <div className={cn(
-                                "max-w-xl p-4 rounded-2xl", 
-                                message.role === 'user' ? 'bg-primary text-primary-foreground rounded-br-none' : 'bg-secondary text-secondary-foreground rounded-bl-none'
+                                "max-w-xl p-4 rounded-2xl prose prose-sm prose-invert", 
+                                message.role === 'user' 
+                                ? 'bg-primary text-primary-foreground rounded-br-none' 
+                                : 'bg-secondary text-secondary-foreground rounded-bl-none',
+                                'prose-headings:text-foreground prose-p:text-foreground prose-a:text-primary prose-strong:text-foreground prose-blockquote:text-muted-foreground prose-table:text-foreground'
                             )}>
-                               <p className="whitespace-pre-wrap">{message.content}</p>
+                               <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                {message.content}
+                               </ReactMarkdown>
                             </div>
                             {message.role === 'user' && (
                                 <Avatar className="w-8 h-8 border border-border">
@@ -123,7 +141,7 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
                 </div>
             </ScrollArea>
             <div className="p-4 border-t border-border/10 bg-background/50 backdrop-blur-sm">
-                <form onSubmit={handleSendMessage} className="relative">
+                <form id="chat-form" onSubmit={handleSendMessage} className="relative">
                     <Input
                         value={input}
                         onChange={(e) => setInput(e.target.value)}

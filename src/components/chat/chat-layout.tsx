@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { SidebarProvider, Sidebar, SidebarTrigger, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarInset } from '@/components/ui/sidebar';
+import { SidebarProvider, Sidebar, SidebarTrigger, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarInset } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Download, PlusCircle, Trash2, CodeXml, MessageSquare, Pencil, Check } from 'lucide-react';
@@ -127,7 +127,7 @@ export default function ChatLayout({
                   <SidebarMenuItem key={convo.id}>
                     {editingConversationId === convo.id ? (
                       <div className="flex items-center gap-1 w-full">
-                        <MessageSquare className="h-4 w-4 ml-2" />
+                        <MessageSquare className="h-4 w-4 ml-2 flex-shrink-0" />
                         <Input
                           ref={inputRef}
                           value={renameInput}
@@ -146,7 +146,7 @@ export default function ChatLayout({
                     ) : (
                       <div
                         className={cn(
-                          'group/item relative flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50',
+                          'group/item relative flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-sidebar-ring transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50',
                           convo.id === activeConversationId &&
                             'bg-sidebar-accent font-medium text-sidebar-accent-foreground'
                         )}
@@ -158,7 +158,7 @@ export default function ChatLayout({
                           <MessageSquare className="h-4 w-4" />
                           <span className="truncate flex-1">{convo.title}</span>
                         </button>
-                         <div className="flex items-center opacity-0 group-hover/item:opacity-100 absolute right-1">
+                         <div className="flex items-center opacity-0 group-hover/item:opacity-100 absolute right-1 bg-sidebar-accent">
                           <Button
                             variant="ghost"
                             size="icon"

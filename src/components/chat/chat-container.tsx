@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { handleChat, handleSummarize } from '@/app/actions';
 import ChatLayout from './chat-layout';
@@ -17,7 +17,7 @@ export interface Conversation {
     id: string;
     title: string;
     messages: Message[];
-    isAutoTitled?: boolean; // Track if the title was set by AI
+    isAutoTitled?: boolean; 
 }
 
 export default function ChatContainer() {
@@ -27,40 +27,50 @@ export default function ChatContainer() {
     const [isLoading, setIsLoading] = useState(false);
     const searchParams = useSearchParams();
 
-    // Load conversations from local storage on initial render
     useEffect(() => {
         const savedConversations = localStorage.getItem('chatConversations');
         if (savedConversations) {
-            const parsedConversations = JSON.parse(savedConversations);
+            const parsedConversations: Conversation[] = JSON.parse(savedConversations);
             setConversations(parsedConversations);
-            if (parsedConversations.length > 0 && !activeConversationId) {
-                setActiveConversationId(parsedConversations[0].id);
+             if (parsedConversations.length > 0 && !activeConversationId) {
+                const lastActiveId = localStorage.getItem('lastActiveConversationId');
+                if (lastActiveId && parsedConversations.some(c => c.id === lastActiveId)) {
+                    setActiveConversationId(lastActiveId);
+                } else if(parsedConversations.length > 0) {
+                     setActiveConversationId(parsedConversations[0].id);
+                }
             }
         }
     }, []);
 
-    // Save conversations to local storage whenever they change
     useEffect(() => {
         if (conversations.length > 0) {
             localStorage.setItem('chatConversations', JSON.stringify(conversations));
         } else {
             localStorage.removeItem('chatConversations');
+            localStorage.removeItem('lastActiveConversationId');
         }
     }, [conversations]);
+
+     useEffect(() => {
+        if (activeConversationId) {
+            localStorage.setItem('lastActiveConversationId', activeConversationId);
+        }
+     }, [activeConversationId]);
     
-    const createNewConversation = (title: string = 'New Chat', initialMessage?: Message) => {
+    const createNewConversation = useCallback((title: string = 'New Chat', initialMessage?: Message) => {
         const newConversation: Conversation = {
             id: Date.now().toString(),
             title: title,
             messages: initialMessage ? [initialMessage] : [],
-            isAutoTitled: false,
+            isAutoTitled: !initialMessage, // if there's an initial message, it's not auto-titled yet
         };
         setConversations(prev => [newConversation, ...prev]);
         setActiveConversationId(newConversation.id);
         return newConversation;
-    };
+    }, []);
 
-    const handleInitialPrompt = async (prompt: string) => {
+    const handleInitialPrompt = useCallback(async (prompt: string) => {
         setIsLoading(true);
         const userMessage: Message = { id: Date.now().toString(), role: 'user', content: prompt };
         
@@ -90,39 +100,49 @@ export default function ChatContainer() {
             ));
         }
         setIsLoading(false);
-    };
+    }, [createNewConversation]);
 
     useEffect(() => {
         const initialPrompt = searchParams.get('prompt');
-        // Only trigger if there's a prompt and no conversations have started.
         if (initialPrompt && conversations.length === 0) {
              handleInitialPrompt(initialPrompt);
         }
-    }, [searchParams]);
+    }, [searchParams, conversations.length, handleInitialPrompt]);
 
     const handleSendMessage = async (message: string) => {
-        if (!activeConversationId) return;
+        let currentConversationId = activeConversationId;
+        let isFirstMessage = false;
+
+        if (!currentConversationId) {
+            const newConversation = createNewConversation();
+            currentConversationId = newConversation.id;
+            isFirstMessage = true;
+        } else {
+            const currentConvo = conversations.find(c => c.id === currentConversationId);
+            isFirstMessage = currentConvo?.messages.length === 0;
+        }
+
+        if (!currentConversationId) return; // Should not happen
 
         const userMessage: Message = { id: Date.now().toString(), role: 'user', content: message };
 
-        const currentConversation = conversations.find(c => c.id === activeConversationId);
-        const isFirstMessage = currentConversation?.messages.length === 0;
-
-        // Update conversation with the new user message first
         setConversations(prev =>
             prev.map(c =>
-                c.id === activeConversationId ? { ...c, messages: [...c.messages, userMessage] } : c
+                c.id === currentConversationId ? { ...c, messages: [...c.messages, userMessage] } : c
             )
         );
         setIsLoading(true);
 
-        const updatedConversation = conversations.find(c => c.id === activeConversationId);
-        const historyForApi = [...(updatedConversation?.messages || []), userMessage].map(msg => ({ role: msg.role, content: msg.content }));
-
+        // We need to get the latest state of the conversation for the API call
+        const updatedHistory = conversations.find(c => c.id === currentConversationId)?.messages || [];
+        const historyForApi = [...updatedHistory, userMessage].map(msg => ({ role: msg.role, content: msg.content }));
+        
         const chatPromise = handleChat({ messages: historyForApi });
         
-        // Only summarize if it's the first message and the title hasn't been manually set
-        const summaryPromise = (isFirstMessage && !currentConversation?.isAutoTitled)
+        const currentConversation = conversations.find(c => c.id === currentConversationId);
+        const shouldSummarize = isFirstMessage && currentConversation?.isAutoTitled;
+        
+        const summaryPromise = shouldSummarize
             ? handleSummarize({ message: message })
             : Promise.resolve(null);
 
@@ -130,7 +150,7 @@ export default function ChatContainer() {
 
         if (summaryResponse && summaryResponse.success && summaryResponse.data) {
              setConversations(prev => prev.map(c => 
-                c.id === activeConversationId ? { ...c, title: summaryResponse.data.title, isAutoTitled: true } : c
+                c.id === currentConversationId ? { ...c, title: summaryResponse.data.title, isAutoTitled: true } : c
             ));
         }
         
@@ -138,14 +158,14 @@ export default function ChatContainer() {
             const botMessage: Message = { id: (Date.now() + 1).toString(), role: 'model', content: response.data.response };
             setConversations(prev =>
                 prev.map(c =>
-                    c.id === activeConversationId ? { ...c, messages: [...c.messages, botMessage] } : c
+                    c.id === currentConversationId ? { ...c, messages: [...c.messages, botMessage] } : c
                 )
             );
         } else {
             const errorMessage: Message = { id: (Date.now() + 1).toString(), role: 'model', content: response.error || "Sorry, something went wrong." };
             setConversations(prev =>
                 prev.map(c =>
-                    c.id === activeConversationId ? { ...c, messages: [...c.messages, errorMessage] } : c
+                    c.id === currentConversationId ? { ...c, messages: [...c.messages, errorMessage] } : c
                 )
             );
         }
@@ -172,7 +192,7 @@ export default function ChatContainer() {
     };
 
     const handleRenameConversation = (id: string, newTitle: string) => {
-        setConversations(prev => prev.map(c => c.id === id ? { ...c, title: newTitle, isAutoTitled: false } : c)); // Set isAutoTitled to false on manual rename
+        setConversations(prev => prev.map(c => c.id === id ? { ...c, title: newTitle, isAutoTitled: false } : c));
         setEditingConversationId(null);
     }
     
