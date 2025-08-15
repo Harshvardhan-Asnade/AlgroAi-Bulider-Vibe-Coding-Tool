@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { handleChat } from '@/app/actions';
+import { handleChat, handleSummarize } from '@/app/actions';
 import ChatLayout from './chat-layout';
 import ChatWindow from './chat-window';
 
@@ -46,10 +46,10 @@ export default function ChatContainer() {
         }
     }, [conversations]);
     
-    const createNewConversation = (initialMessage?: Message) => {
+    const createNewConversation = (title: string = 'New Chat', initialMessage?: Message) => {
         const newConversation: Conversation = {
             id: Date.now().toString(),
-            title: initialMessage?.content.substring(0, 30) || 'New Chat',
+            title: title,
             messages: initialMessage ? [initialMessage] : [],
         };
         setConversations(prev => [newConversation, ...prev]);
@@ -61,11 +61,21 @@ export default function ChatContainer() {
         setIsLoading(true);
         const userMessage: Message = { id: Date.now().toString(), role: 'user', content: prompt };
         
-        // Create a new conversation with this first message
-        const newConversation = createNewConversation(userMessage);
+        // Create a new conversation with a temporary title
+        const newConversation = createNewConversation('New Chat', userMessage);
 
         const historyForApi = [{ role: 'user' as const, content: prompt }];
-        const response = await handleChat({ messages: historyForApi });
+        const [response, summaryResponse] = await Promise.all([
+            handleChat({ messages: historyForApi }),
+            handleSummarize({ message: prompt })
+        ]);
+
+        if (summaryResponse.success && summaryResponse.data) {
+            setConversations(prev => prev.map(c => 
+                c.id === newConversation.id ? { ...c, title: summaryResponse.data.title } : c
+            ));
+        }
+
 
         if (response.success && response.data) {
             const botMessage: Message = { id: (Date.now() + 1).toString(), role: 'model', content: response.data.response };

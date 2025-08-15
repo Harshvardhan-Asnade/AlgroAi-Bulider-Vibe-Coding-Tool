@@ -3,6 +3,7 @@
 import { generateCode } from "@/ai/flows/generate-code-from-prompt";
 import { suggestSecurityFeatures } from "@/ai/flows/suggest-security-features";
 import { generateChatResponse } from "@/ai/flows/generate-chat-response";
+import { summarizeChat } from "@/ai/flows/summarize-chat";
 
 import { z } from "zod";
 
@@ -17,6 +18,10 @@ const chatSchema = z.object({
             content: z.string(),
         })
     ),
+});
+
+const summarizeSchema = z.object({
+    message: z.string(),
 });
 
 export async function handlePrompt(input: { prompt: string }) {
@@ -66,6 +71,28 @@ export async function handleChat(input: { messages: { role: 'user' | 'model', co
             success: true,
             data: {
                 response: result.response,
+            },
+        };
+    } catch (e) {
+        console.error(e);
+        const errorMessage = e instanceof Error ? e.message : "An unexpected error occurred. Please try again.";
+        return { success: false, error: errorMessage };
+    }
+}
+
+export async function handleSummarize(input: { message: string }) {
+    try {
+        const validatedInput = summarizeSchema.parse(input);
+        const result = await summarizeChat(validatedInput);
+
+        if (!result || !result.title) {
+            throw new Error("AI failed to generate a summary.");
+        }
+
+        return {
+            success: true,
+            data: {
+                title: result.title,
             },
         };
     } catch (e) {

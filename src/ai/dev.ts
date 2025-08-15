@@ -4,3 +4,4 @@ config();
 import '@/ai/flows/suggest-security-features.ts';
 import '@/ai/flows/generate-code-from-prompt.ts';
 import '@/ai/flows/generate-chat-response.ts';
+import '@/ai/flows/summarize-chat.ts';
