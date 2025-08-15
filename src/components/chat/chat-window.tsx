@@ -1,74 +1,31 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { handleChat } from '@/app/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Bot, User, Sparkles } from 'lucide-react';
+import { ArrowRight, Bot, User, Sparkles, MessageSquare } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
+import { Conversation, Message } from './chat-container';
 
-interface Message {
-    id: string;
-    role: 'user' | 'model';
-    content: string;
+interface ChatWindowProps {
+    activeConversation: Conversation | null;
+    isLoading: boolean;
+    onSendMessage: (message: string) => Promise<void>;
 }
 
-export default function ChatWindow() {
-    const [messages, setMessages] = useState<Message[]>([]);
+export default function ChatWindow({ activeConversation, isLoading, onSendMessage }: ChatWindowProps) {
     const [input, setInput] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const searchParams = useSearchParams();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
-
-    const handleInitialPrompt = async (prompt: string) => {
-        setIsLoading(true);
-        const userMessage: Message = { id: Date.now().toString(), role: 'user', content: prompt };
-        setMessages([userMessage]);
-
-        const historyForApi = [{ role: 'user' as const, content: prompt }];
-        const response = await handleChat({ messages: historyForApi });
-
-        if (response.success && response.data) {
-            const botMessage: Message = { id: (Date.now() + 1).toString(), role: 'model', content: response.data.response };
-            setMessages(prev => [...prev, botMessage]);
-        } else {
-            const errorMessage: Message = { id: (Date.now() + 1).toString(), role: 'model', content: response.error || "Sorry, something went wrong." };
-            setMessages(prev => [...prev, errorMessage]);
-        }
-        setIsLoading(false);
-    };
-
-    useEffect(() => {
-        const initialPrompt = searchParams.get('prompt');
-        if (initialPrompt && messages.length === 0) {
-            handleInitialPrompt(initialPrompt);
-        }
-    }, [searchParams]);
 
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!input.trim() || isLoading) return;
-
-        const userMessage: Message = { id: Date.now().toString(), role: 'user', content: input };
-        const newMessages = [...messages, userMessage];
-        setMessages(newMessages);
+        if (!input.trim() || isLoading || !activeConversation) return;
+        
+        const messageToSend = input;
         setInput('');
-        setIsLoading(true);
-
-        const historyForApi = newMessages.map(msg => ({ role: msg.role, content: msg.content }));
-        const response = await handleChat({ messages: historyForApi });
-
-        if (response.success && response.data) {
-            const botMessage: Message = { id: (Date.now() + 1).toString(), role: 'model', content: response.data.response };
-            setMessages(prev => [...prev, botMessage]);
-        } else {
-            const errorMessage: Message = { id: (Date.now() + 1).toString(), role: 'model', content: response.error || "Sorry, something went wrong." };
-            setMessages(prev => [...prev, errorMessage]);
-        }
-        setIsLoading(false);
+        await onSendMessage(messageToSend);
     };
 
      useEffect(() => {
@@ -81,13 +38,23 @@ export default function ChatWindow() {
                 });
             }
         }
-    }, [messages]);
+    }, [activeConversation?.messages]);
+
+    if (!activeConversation) {
+        return (
+            <div className="flex flex-1 flex-col items-center justify-center text-center">
+                <MessageSquare size={48} className="text-muted-foreground mb-4" />
+                <h2 className="text-2xl font-semibold font-headline">Start a Conversation</h2>
+                <p className="text-muted-foreground mt-2">Click "New Chat" in the sidebar to begin.</p>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col h-full">
             <ScrollArea className="flex-1" ref={scrollAreaRef}>
                 <div className="space-y-6 p-4">
-                    {messages.map((message) => (
+                    {activeConversation.messages.map((message) => (
                         <div key={message.id} className={cn("flex items-start gap-4", message.role === 'user' ? 'justify-end' : '')}>
                             {message.role === 'model' && (
                                 <Avatar className="w-8 h-8 border border-primary/50 bg-primary/20 text-primary">

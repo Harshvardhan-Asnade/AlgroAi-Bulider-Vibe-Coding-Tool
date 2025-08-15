@@ -1,5 +1,5 @@
-import ChatLayout from '@/components/chat/chat-layout';
+import ChatContainer from '@/components/chat/chat-container';
 
 export default function ChatPage() {
-  return <ChatLayout />;
+  return <ChatContainer />;
 }
