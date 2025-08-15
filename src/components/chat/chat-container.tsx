@@ -22,6 +22,7 @@ export interface Conversation {
 export default function ChatContainer() {
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
+    const [editingConversationId, setEditingConversationId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const searchParams = useSearchParams();
 
@@ -139,6 +140,7 @@ export default function ChatContainer() {
     };
 
     const handleSwitchConversation = (id: string) => {
+        setEditingConversationId(null);
         setActiveConversationId(id);
     };
 
@@ -148,6 +150,11 @@ export default function ChatContainer() {
             setActiveConversationId(conversations.length > 1 ? conversations.filter(c => c.id !== id)[0].id : null);
         }
     };
+
+    const handleRenameConversation = (id: string, newTitle: string) => {
+        setConversations(prev => prev.map(c => c.id === id ? { ...c, title: newTitle } : c));
+        setEditingConversationId(null);
+    }
     
     const activeConversation = conversations.find(c => c.id === activeConversationId) || null;
 
@@ -155,9 +162,12 @@ export default function ChatContainer() {
         <ChatLayout
             conversations={conversations}
             activeConversationId={activeConversationId}
+            editingConversationId={editingConversationId}
             onNewChat={handleNewChat}
             onSwitchConversation={handleSwitchConversation}
             onDeleteConversation={handleDeleteConversation}
+            onStartRename={setEditingConversationId}
+            onRenameConversation={handleRenameConversation}
         >
             <ChatWindow 
                 activeConversation={activeConversation}

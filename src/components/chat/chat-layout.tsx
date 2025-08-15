@@ -1,30 +1,55 @@
+
 'use client';
 
+import { useState, useRef, useEffect } from 'react';
 import { SidebarProvider, Sidebar, SidebarTrigger, SidebarContent, SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
-import { Download, PlusCircle, Trash2, CodeXml, MessageSquare } from 'lucide-react';
+import { Download, PlusCircle, Trash2, CodeXml, MessageSquare, Pencil, Check } from 'lucide-react';
 import Link from 'next/link';
 import type { Conversation } from './chat-container';
+import { Input } from '../ui/input';
 
 interface ChatLayoutProps {
   conversations: Conversation[];
   activeConversationId: string | null;
+  editingConversationId: string | null;
   onNewChat: () => void;
   onSwitchConversation: (id: string) => void;
   onDeleteConversation: (id: string) => void;
+  onStartRename: (id: string) => void;
+  onRenameConversation: (id: string, newTitle: string) => void;
   children: React.ReactNode;
 }
 
 export default function ChatLayout({
   conversations,
   activeConversationId,
+  editingConversationId,
   onNewChat,
   onSwitchConversation,
   onDeleteConversation,
+  onStartRename,
+  onRenameConversation,
   children,
 }: ChatLayoutProps) {
   
   const activeConversation = conversations.find(c => c.id === activeConversationId);
+  const [renameInput, setRenameInput] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editingConversationId && inputRef.current) {
+      const convo = conversations.find(c => c.id === editingConversationId);
+      setRenameInput(convo?.title || '');
+      inputRef.current.focus();
+    }
+  }, [editingConversationId, conversations]);
+
+  const handleRenameSubmit = (id: string) => {
+    if (renameInput.trim()) {
+      onRenameConversation(id, renameInput.trim());
+    }
+  };
 
   return (
     <SidebarProvider>
@@ -42,25 +67,58 @@ export default function ChatLayout({
             <SidebarMenu>
                 {conversations.map((convo) => (
                   <SidebarMenuItem key={convo.id}>
-                    <SidebarMenuButton 
-                      isActive={convo.id === activeConversationId}
-                      onClick={() => onSwitchConversation(convo.id)}
-                      className="group/item"
-                    >
-                      <MessageSquare className="h-4 w-4" />
-                      <span className="truncate flex-1">{convo.title}</span>
-                       <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6 opacity-0 group-hover/item:opacity-100"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onDeleteConversation(convo.id);
-                        }}
+                    {editingConversationId === convo.id ? (
+                      <div className="flex items-center gap-1 w-full">
+                        <MessageSquare className="h-4 w-4 ml-2" />
+                        <Input
+                          ref={inputRef}
+                          value={renameInput}
+                          onChange={(e) => setRenameInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleRenameSubmit(convo.id);
+                            if (e.key === 'Escape') onStartRename('');
+                          }}
+                          onBlur={() => handleRenameSubmit(convo.id)}
+                          className="h-8 flex-1"
+                        />
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleRenameSubmit(convo.id)}>
+                            <Check className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <SidebarMenuButton 
+                        isActive={convo.id === activeConversationId}
+                        onClick={() => onSwitchConversation(convo.id)}
+                        className="group/item"
                       >
-                        <Trash2 className="h-4 w-4 text-muted-foreground" />
-                      </Button>
-                    </SidebarMenuButton>
+                        <MessageSquare className="h-4 w-4" />
+                        <span className="truncate flex-1">{convo.title}</span>
+                         <div className="flex items-center opacity-0 group-hover/item:opacity-100">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onStartRename(convo.id);
+                            }}
+                          >
+                            <Pencil className="h-4 w-4 text-muted-foreground" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDeleteConversation(convo.id);
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4 text-muted-foreground" />
+                          </Button>
+                         </div>
+                      </SidebarMenuButton>
+                    )}
                   </SidebarMenuItem>
                 ))}
             </SidebarMenu>
