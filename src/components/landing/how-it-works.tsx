@@ -1,5 +1,6 @@
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { BotMessageSquare, BrainCircuit, Sparkles, MessageSquarePlus } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const steps = [
   {
@@ -31,7 +32,11 @@ export default function HowItWorks() {
         </div>
         <div className="mt-12 grid gap-8 md:grid-cols-3">
           {steps.map((step, index) => (
-            <Card key={index} className="group relative overflow-hidden border-primary/10 bg-card/80 transition-all duration-300 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-2">
+            <Card 
+                key={index} 
+                className="group relative overflow-hidden border-primary/10 bg-card/80 transition-all duration-300 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-2 animate-float"
+                style={{ animationDelay: `${index * 250}ms` }}
+              >
                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <CardHeader className="relative z-10 flex flex-col items-center text-center p-8">
                 <div className="mb-4 rounded-full bg-primary/10 p-4 border border-primary/20">

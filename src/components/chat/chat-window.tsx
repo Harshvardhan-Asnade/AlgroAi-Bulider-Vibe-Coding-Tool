@@ -46,14 +46,15 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
 
 
     const handleInitialSend = (message: string) => {
-        setInput(message);
-        // We need to wait for the state update before submitting
+        onNewChat();
         setTimeout(() => {
-            const form = document.getElementById('chat-form') as HTMLFormElement;
-            form?.requestSubmit();
-        }, 0);
+            handleSendMessage({
+                preventDefault: () => {},
+                target: { value: message }
+            } as any);
+        }, 100)
     }
-    
+
     // Placeholder for when there's no active conversation
     if (!activeConversation) {
         return (
@@ -64,7 +65,16 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
                     <p className="text-muted-foreground mt-2 max-w-md">You can ask me anything, from explaining complex topics to helping you write code.</p>
                      <div className="mt-8 flex flex-wrap justify-center items-center gap-2 max-w-3xl">
                           <span className="text-sm text-muted-foreground mr-2">Try an example:</span>
-                          {["Explain quantum computing", "How does a blockchain work?", "Write a Python script for web scraping"].map((prompt) => (
+                          {[
+                            "Plan a 5-day trip to Japan",
+                            "Python script for bubble sort",
+                            "Help with password recovery",
+                            "Explain mitosis vs. meiosis",
+                            "Top 3 smartphones under ₹20k",
+                            "Weekly diet plan for better sleep",
+                            "Email for a deadline extension",
+                            "To-do list for today"
+                          ].map((prompt) => (
                             <button
                                 key={prompt}
                                 onClick={() => handleInitialSend(prompt)}
@@ -82,7 +92,10 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Ask AlgroAI anything..."
-                            className="pr-12 bg-secondary border-border focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:ring-2 rounded-xl"
+                            className={cn(
+                                "pr-12 bg-secondary border-border focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:ring-2 rounded-xl transition-all",
+                                input.length > 0 ? "border-primary/50 scale-[1.02]" : ""
+                            )}
                             disabled={isLoading}
                         />
                         <Button type="submit" size="icon" className="absolute top-1/2 right-2 -translate-y-1/2 h-8 w-8 bg-primary hover:bg-primary/90 rounded-full glow-shadow-primary transition-all hover:scale-110" disabled={isLoading || !input.trim()}>
@@ -146,7 +159,10 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder="Ask AlgroAI anything..."
-                        className="pr-12 bg-secondary border-border focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:ring-2 rounded-xl"
+                        className={cn(
+                            "pr-12 bg-secondary border-border focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:ring-2 rounded-xl transition-all",
+                            input.length > 0 ? "border-primary/50 scale-[1.02]" : ""
+                        )}
                         disabled={isLoading}
                     />
                     <Button type="submit" size="icon" className="absolute top-1/2 right-2 -translate-y-1/2 h-8 w-8 bg-primary hover:bg-primary/90 rounded-full glow-shadow-primary transition-all hover:scale-110" disabled={isLoading || !input.trim()}>

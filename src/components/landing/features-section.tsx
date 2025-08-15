@@ -1,5 +1,6 @@
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { BotMessageSquare, BrainCircuit, GraduationCap, AppWindow } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const features = [
   { icon: <BotMessageSquare className="h-6 w-6"/>, title: "Natural Language Conversations", description: "Just chat as you would with a human." },
@@ -19,8 +20,15 @@ export default function FeaturesSection() {
                     </p>
                 </div>
                 <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                    {features.map((feature) => (
-                        <Card key={feature.title} className="text-center p-4 border-primary/10 hover:bg-card/80 transition-colors duration-300">
+                    {features.map((feature, index) => (
+                        <Card 
+                          key={feature.title} 
+                          className={cn(
+                            "text-center p-4 border-primary/10 hover:bg-card/80 transition-colors duration-300 animate-float",
+                            index % 2 !== 0 ? "animation-delay-3000" : ""
+                          )}
+                          style={{ animationDelay: `${index * 150}ms` }}
+                        >
                             <CardHeader>
                                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary mb-4">
                                     {feature.icon}
