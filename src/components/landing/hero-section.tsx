@@ -16,10 +16,10 @@ export default function HeroSection() {
       </div>
        <div className="mt-8 flex flex-wrap justify-center items-center gap-2 max-w-3xl">
           <span className="text-sm text-muted-foreground mr-2">Examples:</span>
-          <a href="#" className="text-sm text-muted-foreground hover:text-primary hover:border-primary/50 border border-muted-foreground/20 rounded-full px-3 py-1 transition-colors">Image compressor</a>
-          <a href="#" className="text-sm text-muted-foreground hover:text-primary hover:border-primary/50 border border-muted-foreground/20 rounded-full px-3 py-1 transition-colors">QR code maker</a>
-          <a href="#" className="text-sm text-muted-foreground hover:text-primary hover:border-primary/50 border border-muted-foreground/20 rounded-full px-3 py-1 transition-colors">SaaS landing page</a>
-          <a href="#" className="text-sm text-muted-foreground hover:text-primary hover:border-primary/50 border border-muted-foreground/20 rounded-full px-3 py-1 transition-colors">AI Chatbot UI</a>
+          <a href="#" className="text-sm text-muted-foreground hover:text-primary hover:border-primary/50 border border-muted-foreground/20 rounded-full px-3 py-1 transition-colors">AI travel agent</a>
+          <a href="#" className="text-sm text-muted-foreground hover:text-primary hover:border-primary/50 border border-muted-foreground/20 rounded-full px-3 py-1 transition-colors">Code-generation bot</a>
+          <a href="#" className="text-sm text-muted-foreground hover:text-primary hover:border-primary/50 border border-muted-foreground/20 rounded-full px-3 py-1 transition-colors">Customer support chatbot</a>
+          <a href="#" className="text-sm text-muted-foreground hover:text-primary hover:border-primary/50 border border-muted-foreground/20 rounded-full px-3 py-1 transition-colors">AI-powered personal tutor</a>
       </div>
     </section>
   );
