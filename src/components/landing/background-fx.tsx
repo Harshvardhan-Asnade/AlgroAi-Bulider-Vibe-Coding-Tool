@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useRef, useEffect, useCallback } from 'react';
@@ -22,7 +23,11 @@ const BackgroundFx = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     
-    const ctx = canvas.getContext('3d');
+    // The original code was trying to get a '3d' context which is incorrect.
+    // It should be 'webgl' or 'webgl2' for 3D rendering.
+    // However, the rest of the code uses 2D context APIs.
+    // Let's stick to '2d' to match the actual drawing commands.
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     let width = canvas.width = window.innerWidth;
@@ -81,11 +86,11 @@ const BackgroundFx = () => {
       draw() {
         this.project();
         const alpha = Math.abs(1 - (this.z / (width / 2)) * 2);
-        if (ctx instanceof WebGL2RenderingContext) {
-          ctx.font = `${12 * this.scaleProjected}px 'Space Mono', monospace`;
-          ctx.fillStyle = `rgba(125, 249, 255, ${alpha * 0.7})`;
-          ctx.fillText(this.text, this.xProjected, this.yProjected);
-        }
+        // This is a 2D context, so we can't check for WebGL2RenderingContext.
+        // We'll just use the 2D context methods directly.
+        ctx.font = `${12 * this.scaleProjected}px 'Space Mono', monospace`;
+        ctx.fillStyle = `rgba(125, 249, 255, ${alpha * 0.7})`;
+        ctx.fillText(this.text, this.xProjected, this.yProjected);
       }
     }
     
@@ -116,63 +121,62 @@ const BackgroundFx = () => {
     const render = () => {
       time += 0.5;
       
-      if(ctx instanceof WebGL2RenderingContext) {
-        ctx.clearRect(0, 0, width, height);
+      // We already know ctx is a 2D context from the check above.
+      ctx.clearRect(0, 0, width, height);
 
-        let angle = time * 0.005 + (scrollY.current * 0.001);
+      let angle = time * 0.005 + (scrollY.current * 0.001);
 
-        let rotation_x = [
-            [1, 0, 0],
-            [0, Math.cos(angle), -Math.sin(angle)],
-            [0, Math.sin(angle), Math.cos(angle)]
-        ];
+      let rotation_x = [
+          [1, 0, 0],
+          [0, Math.cos(angle), -Math.sin(angle)],
+          [0, Math.sin(angle), Math.cos(angle)]
+      ];
 
-        let rotation_y = [
-            [Math.cos(angle), 0, Math.sin(angle)],
-            [0, 1, 0],
-            [-Math.sin(angle), 0, Math.cos(angle)]
-        ];
-        
-        let rotation_z = [
-            [Math.cos(angle), -Math.sin(angle), 0],
-            [Math.sin(angle), Math.cos(angle), 0],
-            [0, 0, 1]
-        ];
+      let rotation_y = [
+          [Math.cos(angle), 0, Math.sin(angle)],
+          [0, 1, 0],
+          [-Math.sin(angle), 0, Math.cos(angle)]
+      ];
+      
+      let rotation_z = [
+          [Math.cos(angle), -Math.sin(angle), 0],
+          [Math.sin(angle), Math.cos(angle), 0],
+          [0, 0, 1]
+      ];
 
-        let t: number[][] = [];
-        for (let i = 0; i < vertices.length; i++) {
-            let rotated_x = [
-                vertices[i][0] * rotation_x[0][0] + vertices[i][1] * rotation_x[1][0] + vertices[i][2] * rotation_x[2][0],
-                vertices[i][0] * rotation_x[0][1] + vertices[i][1] * rotation_x[1][1] + vertices[i][2] * rotation_x[2][1],
-                vertices[i][0] * rotation_x[0][2] + vertices[i][1] * rotation_x[1][2] + vertices[i][2] * rotation_x[2][2]
-            ];
-            let rotated_xy = [
-                rotated_x[0] * rotation_y[0][0] + rotated_x[1] * rotation_y[1][0] + rotated_x[2] * rotation_y[2][0],
-                rotated_x[0] * rotation_y[0][1] + rotated_x[1] * rotation_y[1][1] + rotated_x[2] * rotation_y[2][1],
-                rotated_x[0] * rotation_y[0][2] + rotated_x[1] * rotation_y[1][2] + rotated_x[2] * rotation_y[2][2]
-            ];
-            t.push(rotated_xy);
-        }
-
-        ctx.beginPath();
-        for (let i = 0; i < edges.length; i++) {
-            const p1z = 1 / (fov + t[edges[i][0]][2]);
-            const p1x = (t[edges[i][0]][0] * fov * p1z) + projection_center_x;
-            const p1y = (t[edges[i][0]][1] * fov * p1z) + projection_center_y;
-
-            const p2z = 1 / (fov + t[edges[i][1]][2]);
-            const p2x = (t[edges[i][1]][0] * fov * p2z) + projection_center_x;
-            const p2y = (t[edges[i][1]][1] * fov * p2z) + projection_center_y;
-
-            ctx.moveTo(p1x, p1y);
-            ctx.lineTo(p2x, p2y);
-        }
-        ctx.strokeStyle = "hsla(217.2, 91.2%, 59.8%, 0.2)";
-        ctx.lineWidth = 0.8;
-        ctx.stroke();
-
-        particles.forEach(p => p.draw());
+      let t: number[][] = [];
+      for (let i = 0; i < vertices.length; i++) {
+          let rotated_x = [
+              vertices[i][0] * rotation_x[0][0] + vertices[i][1] * rotation_x[1][0] + vertices[i][2] * rotation_x[2][0],
+              vertices[i][0] * rotation_x[0][1] + vertices[i][1] * rotation_x[1][1] + vertices[i][2] * rotation_x[2][1],
+              vertices[i][0] * rotation_x[0][2] + vertices[i][1] * rotation_x[1][2] + vertices[i][2] * rotation_x[2][2]
+          ];
+          let rotated_xy = [
+              rotated_x[0] * rotation_y[0][0] + rotated_x[1] * rotation_y[1][0] + rotated_x[2] * rotation_y[2][0],
+              rotated_x[0] * rotation_y[0][1] + rotated_x[1] * rotation_y[1][1] + rotated_x[2] * rotation_y[2][1],
+              rotated_x[0] * rotation_y[0][2] + rotated_x[1] * rotation_y[1][2] + rotated_x[2] * rotation_y[2][2]
+          ];
+          t.push(rotated_xy);
       }
+
+      ctx.beginPath();
+      for (let i = 0; i < edges.length; i++) {
+          const p1z = 1 / (fov + t[edges[i][0]][2]);
+          const p1x = (t[edges[i][0]][0] * fov * p1z) + projection_center_x;
+          const p1y = (t[edges[i][0]][1] * fov * p1z) + projection_center_y;
+
+          const p2z = 1 / (fov + t[edges[i][1]][2]);
+          const p2x = (t[edges[i][1]][0] * fov * p2z) + projection_center_x;
+          const p2y = (t[edges[i][1]][1] * fov * p2z) + projection_center_y;
+
+          ctx.moveTo(p1x, p1y);
+          ctx.lineTo(p2x, p2y);
+      }
+      ctx.strokeStyle = "hsla(217.2, 91.2%, 59.8%, 0.2)";
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
+
+      particles.forEach(p => p.draw());
       
       window.requestAnimationFrame(render);
     };
