@@ -1,8 +1,5 @@
 "use server";
 
-import { config } from 'dotenv';
-config();
-
 import { generateCode } from "@/ai/flows/generate-code-from-prompt";
 import { suggestSecurityFeatures } from "@/ai/flows/suggest-security-features";
 import { generateChatResponse } from "@/ai/flows/generate-chat-response";
