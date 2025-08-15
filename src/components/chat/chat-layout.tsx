@@ -5,12 +5,13 @@ import { useState, useRef, useEffect } from 'react';
 import { SidebarProvider, Sidebar, SidebarTrigger, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarInset } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Download, PlusCircle, Trash2, CodeXml, MessageSquare, Pencil, Check } from 'lucide-react';
+import { Download, PlusCircle, Trash2, MessageSquare, Pencil, Check } from 'lucide-react';
 import Link from 'next/link';
 import type { Conversation } from './chat-container';
 import { Input } from '../ui/input';
 import jsPDF from 'jspdf';
 import { cn } from '@/lib/utils';
+import Logo from '../ui/logo';
 
 interface ChatLayoutProps {
   conversations: Conversation[];
@@ -112,10 +113,9 @@ export default function ChatLayout({
   return (
     <SidebarProvider>
       <Sidebar side="left" collapsible="icon" variant="sidebar">
-        <SidebarHeader className="border-b border-sidebar-border">
-          <Link href="/" className="flex items-center gap-2 text-lg font-bold p-2">
-            <CodeXml className="h-6 w-6 text-primary glow-shadow-primary" />
-            <span className="text-white group-data-[collapsible=icon]:hidden">AlgroAI</span>
+        <SidebarHeader className="border-b border-sidebar-border p-2">
+          <Link href="/" className="flex items-center gap-2 text-lg font-bold">
+            <Logo className="h-6 w-auto text-primary glow-shadow-primary" />
           </Link>
         </SidebarHeader>
         <SidebarContent className="p-2">
