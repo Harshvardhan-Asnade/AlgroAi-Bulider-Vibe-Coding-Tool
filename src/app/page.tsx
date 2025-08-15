@@ -12,6 +12,7 @@ import FeaturesSection from '@/components/landing/features-section';
 import PipelineSection from '@/components/landing/pipeline-section';
 import CtaSection from '@/components/landing/cta-section';
 import IntroAnimation from '@/components/landing/intro-animation';
+import BackgroundFx from '@/components/landing/background-fx';
 
 function IntroWrapper({ children }: { children: React.ReactNode }) {
   const [showIntro, setShowIntro] = useState(true);
@@ -36,6 +37,7 @@ export default function Home() {
   return (
     <IntroWrapper>
       <div className="relative flex min-h-screen w-full flex-col items-center overflow-clip">
+        <BackgroundFx />
         <div className="fixed inset-0 z-[-1] bg-gradient-to-br from-background via-background/50 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background" />
         <Header />
