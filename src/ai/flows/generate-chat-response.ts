@@ -9,6 +9,7 @@
 
 import {ai} from '@/ai/genkit';
 import {MessageData, z} from 'genkit';
+import { generate } from 'genkit/generate';
 
 const GenerateChatInputSchema = z.object({
   messages: z.array(
@@ -62,7 +63,19 @@ const generateChatResponseFlow = ai.defineFlow(
       content: [{text: msg.content}],
     }));
 
-    const {output} = await prompt(input);
-    return { response: output!.response };
+    const llmResponse = await generate({
+      model: 'googleai/gemini-2.0-flash',
+      history: history,
+      prompt: input.messages[history.length - 1].content,
+      output: {
+        schema: GenerateChatOutputSchema,
+      },
+    });
+
+    const response = llmResponse.output();
+    if (!response) {
+      throw new Error('No response generated');
+    }
+    return response;
   }
 );
