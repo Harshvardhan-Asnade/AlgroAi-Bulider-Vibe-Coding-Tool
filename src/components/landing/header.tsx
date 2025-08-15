@@ -12,6 +12,13 @@ export default function Header() {
           <Badge variant="outline" className="text-xs border-primary/50 text-primary animate-pulse">beta v0.1</Badge>
         </Link>
       </div>
+      <div className="flex items-center gap-4">
+        <Link href="/chat">
+          <Button className="bg-gradient-to-r from-primary to-accent/80 text-primary-foreground hover:shadow-lg hover:shadow-primary/40 transition-all duration-300 transform hover:scale-105">
+            Get Early Access
+          </Button>
+        </Link>
+      </div>
     </header>
   );
 }
