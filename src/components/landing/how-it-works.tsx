@@ -1,21 +1,21 @@
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { BotMessageSquare, Code, Rocket } from 'lucide-react';
+import { BotMessageSquare, BrainCircuit, Sparkles, MessageSquarePlus } from 'lucide-react';
 
 const steps = [
   {
     icon: <BotMessageSquare className="h-8 w-8 text-primary" />,
-    title: 'Describe Your Vision',
-    description: 'Provide a detailed prompt of your application requirements and functionality.',
+    title: 'Ask Your Question',
+    description: 'Type your query in natural language—no complex commands needed.',
   },
   {
-    icon: <Code className="h-8 w-8 text-primary" />,
-    title: 'Code Generation',
-    description: 'The AI engine interprets your prompt to produce a complete, production-ready codebase.',
+    icon: <BrainCircuit className="h-8 w-8 text-primary" />,
+    title: 'AI Understanding',
+    description: 'AlgroAI interprets your words, identifies intent, and understands context.',
   },
   {
-    icon: <Rocket className="h-8 w-8 text-primary" />,
-    title: 'Iterate and Deploy',
-    description: 'Review the generated application, provide feedback for adjustments, and deploy.',
+    icon: <Sparkles className="h-8 w-8 text-primary" />,
+    title: 'Smart Response',
+    description: 'The chatbot generates accurate, meaningful answers instantly.',
   },
 ];
 
@@ -26,7 +26,7 @@ export default function HowItWorks() {
         <div className="text-center">
           <h2 className="text-3xl md:text-4xl font-bold font-headline">How It Works</h2>
           <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-            A simple, conversational process to bring your ideas to life.
+            A simple, conversational process to get answers, ideas, and insights with AI.
           </p>
         </div>
         <div className="mt-12 grid gap-8 md:grid-cols-3">

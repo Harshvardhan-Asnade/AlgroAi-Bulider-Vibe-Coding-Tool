@@ -1,14 +1,14 @@
 "use client";
 
-import { MessageSquare, Cpu, Box, Rocket } from 'lucide-react';
+import { MessageSquare, Cpu, Sparkles, Rocket } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 const pipelineSteps = [
-    { icon: MessageSquare, title: "Your Prompt", description: "The process begins with your detailed description." },
-    { icon: Cpu, title: "AI Analysis", description: "The AI interprets your prompt and plans the codebase." },
-    { icon: Box, title: "Code Generation", description: "Full-stack, production-quality code is written automatically." },
-    { icon: Rocket, title: "Deployment", description: "Your application is built and deployed to the cloud." },
+    { icon: MessageSquare, title: "Your Prompt", description: "Ask a question, request code, or explain a problem." },
+    { icon: Cpu, title: "AI Analysis", description: "AlgroAI processes the intent behind your request." },
+    { icon: Sparkles, title: "Response Generation", description: "AI provides an accurate, human-like reply." },
+    { icon: Rocket, title: "Action & Integration", description: "Use responses in study, work, or business apps instantly." },
 ];
 
 export default function PipelineSection() {
@@ -16,9 +16,9 @@ export default function PipelineSection() {
         <section id="pipeline" className="w-full py-20 lg:py-32">
             <div className="container mx-auto px-4">
                 <div className="text-center">
-                    <h2 className="text-3xl md:text-4xl font-bold font-headline">From Idea to App</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold font-headline">From Question to Answer</h2>
                     <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-                        Witness the automated pipeline that brings your conversations to life.
+                        See how AlgroAI transforms conversations into instant solutions.
                     </p>
                 </div>
                 <div className="mt-20 max-w-2xl mx-auto">
