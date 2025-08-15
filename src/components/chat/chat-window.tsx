@@ -4,7 +4,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, User, Sparkles, Bot, FileText, BarChart, Settings } from 'lucide-react';
+import { ArrowRight, User, Sparkles, Bot, FileText, BarChart, Settings, Copy, Check } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -91,8 +91,48 @@ function WelcomeScreen({ onPromptClick }: { onPromptClick: (prompt: string) => v
     );
 }
 
+function MessageContent({ content }: { content: string }) {
+    const formattedContent = useMemo(() => {
+        try {
+            const parsed = JSON.parse(content);
+            if (Array.isArray(parsed) && parsed.every(item => item.day && item.location && item.activities)) {
+                return parsed.map(day => 
+                    `### Day ${day.day}: ${day.location}\n\n` +
+                    day.activities.map((activity: string) => `- ${activity}`).join('\n')
+                ).join('\n\n');
+            }
+        } catch (e) {
+            // Not a JSON object we can format, return as is.
+        }
+        return content;
+    }, [content]);
+
+    return <ReactMarkdown remarkPlugins={[remarkGfm]}>{formattedContent}</ReactMarkdown>;
+}
+
+
 function ActiveChat({ conversation, isLoading }: { conversation: Conversation, isLoading: boolean }) {
     const scrollAreaRef = useRef<HTMLDivElement>(null);
+    const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
+
+    const handleCopy = (content: string, messageId: string) => {
+        let textToCopy = content;
+         try {
+            const parsed = JSON.parse(content);
+            if (Array.isArray(parsed) && parsed.every(item => item.day && item.location && item.activities)) {
+                textToCopy = parsed.map((day: any) => 
+                    `### Day ${day.day}: ${day.location}\n\n` +
+                    day.activities.map((activity: string) => `- ${activity}`).join('\n')
+                ).join('\n\n');
+            }
+        } catch (e) {
+            // Not a special JSON, copy as is
+        }
+
+        navigator.clipboard.writeText(textToCopy);
+        setCopiedMessageId(messageId);
+        setTimeout(() => setCopiedMessageId(null), 2000);
+    };
 
     const scrollToBottom = () => {
          if (scrollAreaRef.current) {
@@ -115,7 +155,7 @@ function ActiveChat({ conversation, isLoading }: { conversation: Conversation, i
         if (lastMessage.role === 'model') {
             return <TypingEffect text={lastMessage.content} />;
         }
-        return <ReactMarkdown remarkPlugins={[remarkGfm]}>{lastMessage.content}</ReactMarkdown>;
+        return <MessageContent content={lastMessage.content} />;
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [conversation.messages[conversation.messages.length - 1]?.content]);
     
@@ -135,7 +175,7 @@ function ActiveChat({ conversation, isLoading }: { conversation: Conversation, i
                 {conversation.messages.slice(0, -1).map((message) => (
                     <motion.div 
                       key={message.id} 
-                      className={cn("flex items-start gap-4")}
+                      className={cn("group flex items-start gap-4 relative")}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
@@ -152,22 +192,28 @@ function ActiveChat({ conversation, isLoading }: { conversation: Conversation, i
                             : 'bg-secondary text-secondary-foreground',
                             'prose-headings:text-foreground prose-p:text-foreground prose-a:text-primary prose-strong:text-foreground prose-blockquote:text-muted-foreground prose-table:text-foreground'
                         )}>
-                           <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                            {message.content}
-                           </ReactMarkdown>
+                           <MessageContent content={message.content} />
                         </div>
                         {message.role === 'user' && (
                             <Avatar className="w-8 h-8 border border-border">
                                 <AvatarFallback><User size={20} /></AvatarFallback>
                             </Avatar>
                         )}
+                        <Button
+                            size="icon"
+                            variant="ghost"
+                            className="absolute bottom-2 right-12 h-7 w-7 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => handleCopy(message.content, message.id)}
+                        >
+                            {copiedMessageId === message.id ? <Check size={16} className="text-primary" /> : <Copy size={16} />}
+                        </Button>
                     </motion.div>
                 ))}
                 </AnimatePresence>
                  {conversation.messages.length > 0 && (
                       <motion.div 
                         key={conversation.messages[conversation.messages.length - 1].id}
-                        className={cn("flex items-start gap-4")}
+                        className={cn("group flex items-start gap-4 relative")}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                       >
@@ -190,6 +236,14 @@ function ActiveChat({ conversation, isLoading }: { conversation: Conversation, i
                                 <AvatarFallback><User size={20} /></AvatarFallback>
                             </Avatar>
                         )}
+                         <Button
+                            size="icon"
+                            variant="ghost"
+                            className="absolute bottom-2 right-12 h-7 w-7 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => handleCopy(conversation.messages[conversation.messages.length - 1].content, conversation.messages[conversation.messages.length - 1].id)}
+                        >
+                            {copiedMessageId === conversation.messages[conversation.messages.length - 1].id ? <Check size={16} className="text-primary" /> : <Copy size={16} />}
+                        </Button>
                     </motion.div>
                  )}
                 {isLoading && (
@@ -229,14 +283,15 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
         // We need a small delay to allow React to update the input's value
         // before we programmatically submit the form.
         setTimeout(() => {
-            document.getElementById('chat-form')?.requestSubmit();
+            const form = document.getElementById('chat-form') as HTMLFormElement;
+            form?.requestSubmit();
         }, 100);
     }
 
     return (
         <div className="flex flex-col h-full bg-background">
             <div className="flex-1 flex flex-col overflow-hidden">
-                {activeConversation ? (
+                {activeConversation && activeConversation.messages.length > 0 ? (
                     <ActiveChat conversation={activeConversation} isLoading={isLoading} />
                 ) : (
                     <WelcomeScreen onPromptClick={handlePromptClick} />
@@ -259,3 +314,5 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
         </div>
     );
 }
+
+    
