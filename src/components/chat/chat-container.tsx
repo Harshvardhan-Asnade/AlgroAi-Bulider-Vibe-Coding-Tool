@@ -71,37 +71,40 @@ export default function ChatContainer() {
     }, []);
 
     const handleSendMessage = async (message: string, isNewChat: boolean = false) => {
-        let currentConversationId = activeConversationId;
-        let convoToUpdate: Conversation;
+        let currentConversation: Conversation;
+        let currentConversationId: string;
 
-        if (isNewChat || !currentConversationId) {
-            convoToUpdate = createNewConversation();
-            currentConversationId = convoToUpdate.id;
+        if (isNewChat || !activeConversationId) {
+            currentConversation = createNewConversation();
+            currentConversationId = currentConversation.id;
         } else {
-            convoToUpdate = conversations.find(c => c.id === currentConversationId)!;
+            currentConversation = conversations.find(c => c.id === activeConversationId)!;
+            currentConversationId = activeConversationId;
         }
 
-        if (!currentConversationId || !convoToUpdate) return;
+        if (!currentConversation) return;
 
         const userMessage: Message = { id: Date.now().toString(), role: 'user', content: message };
         
-        const isFirstMessage = convoToUpdate.messages.length === 0;
+        const isFirstMessage = currentConversation.messages.length === 0;
 
-        // Immediately update UI with user message for responsiveness
-        const updatedConversations = conversations.map(c =>
-            c.id === currentConversationId
-                ? { ...c, messages: [...c.messages, userMessage] }
-                : c
+        const updatedMessages = [...currentConversation.messages, userMessage];
+        const updatedConversationWithUserMessage = { ...currentConversation, messages: updatedMessages };
+
+        setConversations(prev =>
+            prev.map(c =>
+                c.id === currentConversationId
+                    ? updatedConversationWithUserMessage
+                    : c
+            )
         );
-        setConversations(updatedConversations);
         setIsLoading(true);
 
-        const currentConvo = updatedConversations.find(c => c.id === currentConversationId)!;
-        const historyForApi = currentConvo.messages.map(msg => ({ role: msg.role, content: msg.content }));
+        const historyForApi = updatedMessages.map(msg => ({ role: msg.role, content: msg.content }));
         
         const chatPromise = handleChat({ messages: historyForApi });
         
-        const shouldSummarize = isFirstMessage && convoToUpdate.title === 'New Chat';
+        const shouldSummarize = isFirstMessage && currentConversation.title === 'New Chat';
         const summaryPromise = shouldSummarize
             ? handleSummarize({ message: message })
             : Promise.resolve(null);
