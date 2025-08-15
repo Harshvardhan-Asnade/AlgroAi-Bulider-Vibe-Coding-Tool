@@ -5,7 +5,7 @@ export default function Logo({ className }: { className?: string }) {
     <div
       className={cn(
         "text-2xl font-extrabold tracking-tight",
-        "bg-gradient-to-r from-primary via-accent to-pink-500 bg-clip-text text-transparent",
+        "bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent",
         className
       )}
     >
