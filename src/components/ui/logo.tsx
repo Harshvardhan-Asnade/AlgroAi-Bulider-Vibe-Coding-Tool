@@ -4,9 +4,9 @@ export default function Logo({ className }: { className?: string }) {
   return (
     <svg
       className={cn(className)}
-      width="150"
+      width="41"
       height="40"
-      viewBox="0 0 150 40"
+      viewBox="0 0 41 40"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -34,22 +34,6 @@ export default function Logo({ className }: { className?: string }) {
         <path
           d="M35.0781 11.2061V17.4999L40.8759 14.35V8.05627L35.0781 11.2061Z"
           fill="url(#paint5_linear_105_2)"
-        />
-        <text
-          fill="url(#paint6_linear_105_2)"
-          xmlSpace="preserve"
-          style={{ whiteSpace: "pre" }}
-          fontFamily="Space Grotesk"
-          fontSize="20"
-          fontWeight="bold"
-          letterSpacing="0em"
-        >
-          <tspan x="48" y="26.5">AlgroAI.build</tspan>
-        </text>
-        <path
-          d="M48 30H148"
-          stroke="url(#paint7_linear_105_2)"
-          strokeWidth="2"
         />
       </g>
       <defs>
@@ -119,30 +103,8 @@ export default function Logo({ className }: { className?: string }) {
           <stop stopColor="#34D399" />
           <stop offset="1" stopColor="#A7F3D0" />
         </linearGradient>
-        <linearGradient
-          id="paint6_linear_105_2"
-          x1="48"
-          y1="25"
-          x2="148"
-          y2="25"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="white" />
-          <stop offset="1" stopColor="#E5E7EB" />
-        </linearGradient>
-        <linearGradient
-          id="paint7_linear_105_2"
-          x1="48"
-          y1="31"
-          x2="148"
-          y2="31"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#34D399" />
-          <stop offset="1" stopColor="#A7F3D0" />
-        </linearGradient>
         <clipPath id="clip0_105_2">
-          <rect width="150" height="40" fill="white" />
+          <rect width="41" height="40" fill="white" />
         </clipPath>
       </defs>
     </svg>
