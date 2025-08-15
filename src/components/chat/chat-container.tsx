@@ -70,17 +70,6 @@ export default function ChatContainer() {
         return newConversation;
     }, []);
 
-    const handleInitialPrompt = useCallback((prompt: string) => {
-         handleSendMessage(prompt, true);
-    }, []);
-
-    useEffect(() => {
-        const initialPrompt = searchParams.get('prompt');
-        if (initialPrompt && conversations.length === 0) {
-             handleInitialPrompt(initialPrompt);
-        }
-    }, [searchParams, conversations.length, handleInitialPrompt]);
-
     const handleSendMessage = async (message: string, isNewChat: boolean = false) => {
         let currentConversationId = activeConversationId;
         let convoToUpdate: Conversation;
@@ -98,20 +87,21 @@ export default function ChatContainer() {
         
         const isFirstMessage = convoToUpdate.messages.length === 0;
 
-        // Update conversation with the new user message immediately for UI responsiveness
-        setConversations(prev =>
-            prev.map(c =>
-                c.id === currentConversationId ? { ...c, messages: [...c.messages, userMessage] } : c
-            )
+        // Immediately update UI with user message for responsiveness
+        const updatedConversations = conversations.map(c =>
+            c.id === currentConversationId
+                ? { ...c, messages: [...c.messages, userMessage] }
+                : c
         );
+        setConversations(updatedConversations);
         setIsLoading(true);
 
-        const updatedHistory = [...convoToUpdate.messages, userMessage];
-        const historyForApi = updatedHistory.map(msg => ({ role: msg.role, content: msg.content }));
+        const currentConvo = updatedConversations.find(c => c.id === currentConversationId)!;
+        const historyForApi = currentConvo.messages.map(msg => ({ role: msg.role, content: msg.content }));
         
         const chatPromise = handleChat({ messages: historyForApi });
         
-        const shouldSummarize = isFirstMessage && convoToUpdate.isAutoTitled;
+        const shouldSummarize = isFirstMessage && convoToUpdate.title === 'New Chat';
         const summaryPromise = shouldSummarize
             ? handleSummarize({ message: message })
             : Promise.resolve(null);
@@ -152,6 +142,14 @@ export default function ChatContainer() {
             setIsLoading(false);
         }
     };
+    
+    useEffect(() => {
+        const initialPrompt = searchParams.get('prompt');
+        if (initialPrompt && conversations.length === 0) {
+            handleSendMessage(initialPrompt, true);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams]);
 
     const handleNewChat = () => {
         createNewConversation();
@@ -193,8 +191,7 @@ export default function ChatContainer() {
             <ChatWindow 
                 activeConversation={activeConversation}
                 isLoading={isLoading}
-                onSendMessage={(message) => handleSendMessage(message, !activeConversationId)}
-                onNewChat={handleNewChat}
+                onSendMessage={handleSendMessage}
             />
         </ChatLayout>
     );
