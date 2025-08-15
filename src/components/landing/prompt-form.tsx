@@ -16,6 +16,13 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+const examplePrompts = [
+    "AI travel agent",
+    "Code-generation bot",
+    "Customer support chatbot",
+    "AI-powered personal tutor"
+];
+
 export default function PromptForm() {
   const [isLoading, setIsLoading] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -39,13 +46,27 @@ export default function PromptForm() {
     setIsLoading(true);
     router.push(`/chat?prompt=${encodeURIComponent(data.prompt)}`);
   };
+
+  const handleExampleClick = (prompt: string) => {
+    form.setValue('prompt', prompt);
+    // Manually trigger form submission
+    form.handleSubmit(onSubmit)();
+  };
   
   useEffect(() => {
     const textarea = textareaRef.current;
     if(textarea) {
         textarea.style.height = 'auto';
     }
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [form.watch('prompt')]);
 
   return (
     <>
@@ -68,6 +89,19 @@ export default function PromptForm() {
             <p className="text-sm text-destructive">{form.formState.errors.prompt.message}</p>
         )}
       </form>
+       <div className="mt-8 flex flex-wrap justify-center items-center gap-2 max-w-3xl">
+          <span className="text-sm text-muted-foreground mr-2">Examples:</span>
+          {examplePrompts.map((prompt) => (
+            <button
+                key={prompt}
+                onClick={() => handleExampleClick(prompt)}
+                disabled={isLoading}
+                className="text-sm text-muted-foreground hover:text-primary hover:border-primary/50 border border-muted-foreground/20 rounded-full px-3 py-1 transition-colors disabled:opacity-50 disabled:pointer-events-none"
+            >
+                {prompt}
+            </button>
+          ))}
+      </div>
     </>
   );
 }
