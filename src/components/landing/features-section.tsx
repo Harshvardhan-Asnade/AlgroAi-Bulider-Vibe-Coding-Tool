@@ -2,10 +2,10 @@ import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/ca
 import { BotMessageSquare, BrainCircuit, Blocks, GitBranchPlus } from 'lucide-react';
 
 const features = [
-  { icon: <BotMessageSquare className="h-6 w-6"/>, title: "Conversational Development", description: "Describe your app, and our AI will ask questions to refine it." },
-  { icon: <BrainCircuit className="h-6 w-6"/>, title: "Context-Aware Logic", description: "The AI understands context to generate relevant code and logic." },
-  { icon: <Blocks className="h-6 w-6"/>, title: "Modular Codebase", description: "Get clean, production-ready code that's easy to understand and maintain." },
-  { icon: <GitBranchPlus className="h-6 w-6"/>, title: "Iterative Feedback", description: "Refine your app by chatting. The AI updates the code as you go." },
+  { icon: <BotMessageSquare className="h-6 w-6"/>, title: "Prompt-Based Development", description: "Use natural language to specify the application you want to build." },
+  { icon: <BrainCircuit className="h-6 w-6"/>, title: "Intelligent AI Engine", description: "Our AI understands complex requirements and generates relevant logic." },
+  { icon: <Blocks className="h-6 w-6"/>, title: "Production-Ready Code", description: "Get clean, modular code that's easy to understand and extend." },
+  { icon: <GitBranchPlus className="h-6 w-6"/>, title: "Continuous Refinement", description: "Provide feedback to the AI to iterate and improve your application." },
 ];
 
 export default function FeaturesSection() {

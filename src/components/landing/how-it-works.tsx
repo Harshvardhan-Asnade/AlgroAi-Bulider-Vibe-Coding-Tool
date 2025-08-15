@@ -4,18 +4,18 @@ import { BotMessageSquare, Code, Rocket } from 'lucide-react';
 const steps = [
   {
     icon: <BotMessageSquare className="h-8 w-8 text-primary" />,
-    title: 'Start the Conversation',
-    description: 'Describe your application in plain English. The AI will ask clarifying questions.',
+    title: 'Describe Your Vision',
+    description: 'Provide a detailed prompt of your application requirements and functionality.',
   },
   {
     icon: <Code className="h-8 w-8 text-primary" />,
-    title: 'AI Generates the Code',
-    description: 'Our AI analyzes the conversation and generates full-stack code in seconds.',
+    title: 'Code Generation',
+    description: 'The AI engine interprets your prompt to produce a complete, production-ready codebase.',
   },
   {
     icon: <Rocket className="h-8 w-8 text-primary" />,
-    title: 'Review and Deploy',
-    description: 'Instantly preview your creation, continue the chat to iterate, and deploy.',
+    title: 'Iterate and Deploy',
+    description: 'Review the generated application, provide feedback for adjustments, and deploy.',
   },
 ];
 
