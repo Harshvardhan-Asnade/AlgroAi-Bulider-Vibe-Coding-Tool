@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { Github, Linkedin } from 'lucide-react';
 import Logo from '../ui/logo';
+import { Separator } from '../ui/separator';
 
 export default function Footer() {
     return (
@@ -13,10 +14,13 @@ export default function Footer() {
                         <span className="text-gradient">AlgroChat.Ai</span>
                     </Link>
                 </div>
-                <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} AlgroChat.Ai. All rights reserved.</p>
-                <div className="flex items-center gap-4">
-                    <a href="https://github.com/Harshvardhan-Asnade" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors"><Github /></a>
-                    <a href="https://www.linkedin.com/in/harshai/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors"><Linkedin /></a>
+                <div className="flex items-center gap-4 md:gap-8">
+                    <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} AlgroChat.Ai. All rights reserved.</p>
+                    <Separator orientation="vertical" className="h-6 hidden md:block" />
+                    <div className="flex items-center gap-4">
+                        <a href="https://github.com/Harshvardhan-Asnade" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors"><Github /></a>
+                        <a href="https://www.linkedin.com/in/harshai/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors"><Linkedin /></a>
+                    </div>
                 </div>
             </div>
         </footer>
