@@ -4,11 +4,11 @@ export default function Logo({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "text-2xl font-extrabold tracking-tight text-primary",
+        "animate-shine-sweep text-shine text-2xl font-extrabold tracking-tight",
         className
       )}
     >
-      Ai
+      AlgroAi
     </div>
   );
 }

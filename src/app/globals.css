@@ -113,4 +113,16 @@
     filter: drop-shadow(0 0 8px hsl(var(--accent) / 0.6))
       drop-shadow(0 0 16px hsl(var(--accent) / 0.4));
   }
+  .text-shine {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      110deg,
+      hsl(var(--foreground)) 25%,
+      #fff 45%,
+      #fff 55%,
+      hsl(var(--foreground)) 75%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+  }
 }
