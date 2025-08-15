@@ -71,10 +71,8 @@ export default function ChatContainer() {
     }, []);
 
     const handleInitialPrompt = useCallback((prompt: string) => {
-        if (conversations.length === 0) {
-             handleSendMessage(prompt, true);
-        }
-    }, [conversations.length]);
+         handleSendMessage(prompt, true);
+    }, []);
 
     useEffect(() => {
         const initialPrompt = searchParams.get('prompt');
@@ -85,19 +83,22 @@ export default function ChatContainer() {
 
     const handleSendMessage = async (message: string, isNewChat: boolean = false) => {
         let currentConversationId = activeConversationId;
-        
+        let convoToUpdate: Conversation;
+
         if (isNewChat || !currentConversationId) {
-            const newConversation = createNewConversation();
-            currentConversationId = newConversation.id;
+            convoToUpdate = createNewConversation();
+            currentConversationId = convoToUpdate.id;
+        } else {
+            convoToUpdate = conversations.find(c => c.id === currentConversationId)!;
         }
 
-        if (!currentConversationId) return;
+        if (!currentConversationId || !convoToUpdate) return;
 
         const userMessage: Message = { id: Date.now().toString(), role: 'user', content: message };
         
-        const currentConvo = conversations.find(c => c.id === currentConversationId);
-        const isFirstMessage = !currentConvo || currentConvo.messages.length === 0;
+        const isFirstMessage = convoToUpdate.messages.length === 0;
 
+        // Update conversation with the new user message immediately for UI responsiveness
         setConversations(prev =>
             prev.map(c =>
                 c.id === currentConversationId ? { ...c, messages: [...c.messages, userMessage] } : c
@@ -105,13 +106,12 @@ export default function ChatContainer() {
         );
         setIsLoading(true);
 
-        const updatedHistory = [...(currentConvo?.messages || []), userMessage];
+        const updatedHistory = [...convoToUpdate.messages, userMessage];
         const historyForApi = updatedHistory.map(msg => ({ role: msg.role, content: msg.content }));
         
         const chatPromise = handleChat({ messages: historyForApi });
         
-        const shouldSummarize = isFirstMessage && currentConvo?.isAutoTitled;
-        
+        const shouldSummarize = isFirstMessage && convoToUpdate.isAutoTitled;
         const summaryPromise = shouldSummarize
             ? handleSummarize({ message: message })
             : Promise.resolve(null);
