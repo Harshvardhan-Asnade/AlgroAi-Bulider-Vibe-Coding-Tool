@@ -28,6 +28,7 @@ const prompt = ai.definePrompt({
   name: 'generateCodePrompt',
   input: {schema: GenerateCodeInputSchema},
   output: {schema: GenerateCodeOutputSchema},
+  model: 'googleai/gemini-2.0-flash',
   prompt: `You are an AI code generator. You will generate code based on the user's prompt.
 
 Prompt: {{{prompt}}}`,

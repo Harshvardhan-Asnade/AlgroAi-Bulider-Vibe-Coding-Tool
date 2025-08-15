@@ -33,6 +33,7 @@ const prompt = ai.definePrompt({
   name: 'generateChatResponsePrompt',
   input: {schema: GenerateChatInputSchema},
   output: {schema: GenerateChatOutputSchema},
+  model: 'googleai/gemini-2.0-flash',
   prompt: `You are a helpful AI assistant named AlgroAI. Your goal is to provide accurate and helpful responses to the user.
 
   When explaining technical concepts, always return answers in a clean, structured, and readable format.

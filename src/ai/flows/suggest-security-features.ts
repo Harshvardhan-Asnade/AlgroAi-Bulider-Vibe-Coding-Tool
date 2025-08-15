@@ -34,6 +34,7 @@ const prompt = ai.definePrompt({
   name: 'suggestSecurityFeaturesPrompt',
   input: {schema: SuggestSecurityFeaturesInputSchema},
   output: {schema: SuggestSecurityFeaturesOutputSchema},
+  model: 'googleai/gemini-2.0-flash',
   prompt: `You are a security expert who analyzes user prompts for application ideas and suggests relevant security features.
 
   Based on the following user prompt, suggest a list of security features that should be implemented in the application. Also, provide a brief reasoning for each suggested feature.

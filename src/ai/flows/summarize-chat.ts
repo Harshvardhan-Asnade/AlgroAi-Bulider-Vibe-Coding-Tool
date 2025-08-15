@@ -28,6 +28,7 @@ const prompt = ai.definePrompt({
   name: 'summarizeChatPrompt',
   input: {schema: SummarizeChatInputSchema},
   output: {schema: SummarizeChatOutputSchema},
+  model: 'googleai/gemini-2.0-flash',
   prompt: `You are a smart assistant that creates short, clear, and descriptive titles for chat conversations. 
 Generate a title (3-5 words) that summarizes the main topic of this chat:
 
