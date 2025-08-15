@@ -228,12 +228,6 @@ export default function ChatLayout({
             </SidebarMenu>
         </SidebarContent>
         <SidebarFooter className="p-4 group-data-[collapsible=icon]:hidden">
-          <div className="p-4 rounded-lg bg-primary/10 border border-primary/20 text-center">
-            <p className="text-sm font-semibold">Only 5 AI reports left</p>
-            <p className="text-xs text-muted-foreground mt-1">Get deeper insights with Pro</p>
-            <Button size="sm" className="w-full mt-3">Upgrade Now</Button>
-          </div>
-          <Separator className="my-4 bg-border/20" />
            <NavItem icon={Settings}>Settings</NavItem>
         </SidebarFooter>
       </Sidebar>
