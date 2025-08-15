@@ -96,7 +96,7 @@ export default function PromptForm() {
             onChange={handleTextareaChange}
             onKeyDown={handleKeyDown}
           />
-           <Button type="submit" disabled={isLoading} size="icon" className="absolute bottom-3 right-3 h-8 w-8 bg-primary hover:bg-primary/90 rounded-full glow-shadow-primary transition-all hover:scale-110">
+           <Button type="submit" disabled={isLoading} size="icon" className="absolute top-1/2 -translate-y-1/2 right-3 h-8 w-8 bg-primary hover:bg-primary/90 rounded-full glow-shadow-primary transition-all hover:scale-110">
                 {isLoading ? <Loader2 className="animate-spin" /> : <ArrowRight className="h-5 w-5"/>}
            </Button>
         </div>
