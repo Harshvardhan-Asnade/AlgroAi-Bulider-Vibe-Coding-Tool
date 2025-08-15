@@ -2,16 +2,18 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { SidebarProvider, Sidebar, SidebarTrigger, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarInset } from '@/components/ui/sidebar';
+import { SidebarProvider, Sidebar, SidebarTrigger, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarInset, SidebarFooter } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Download, PlusCircle, Trash2, MessageSquare, Pencil, Check } from 'lucide-react';
+import { Download, PlusCircle, Trash2, MessageSquare, Pencil, Check, Home, LayoutGrid, FolderKanban, Save, Share2, Settings, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import type { Conversation } from './chat-container';
 import { Input } from '../ui/input';
 import jsPDF from 'jspdf';
 import { cn } from '@/lib/utils';
 import Logo from '../ui/logo';
+import { Avatar, AvatarFallback } from '../ui/avatar';
+import { Separator } from '../ui/separator';
 
 interface ChatLayoutProps {
   conversations: Conversation[];
@@ -109,24 +111,62 @@ export default function ChatLayout({
 
     doc.save('chat-history.pdf');
   };
+  
+  const NavItem = ({ icon: Icon, children, ...props }: { icon: React.ElementType, children: React.ReactNode, onClick?: () => void, href?: string }) => (
+    <Button variant="ghost" className="w-full justify-start gap-3 px-3" {...props}>
+      <Icon className="h-4 w-4 text-muted-foreground" />
+      <span className="truncate">{children}</span>
+    </Button>
+  );
 
   return (
     <SidebarProvider>
-      <Sidebar side="left" collapsible="icon" variant="sidebar">
-        <SidebarHeader className="border-b border-sidebar-border p-2">
-          <Link href="/" className="flex items-center gap-2 text-lg font-bold">
-            <Logo className="h-6 w-auto text-primary glow-shadow-primary" />
-          </Link>
+      <Sidebar side="left" collapsible="icon" variant="sidebar" className="bg-secondary/50 border-r border-border/20">
+        <SidebarHeader className="p-2 h-16 flex items-center">
+            <div className="flex items-center gap-2 w-full p-2">
+                 <Avatar className="w-8 h-8">
+                     <AvatarFallback>HA</AvatarFallback>
+                 </Avatar>
+                 <div className="flex-1 truncate group-data-[collapsible=icon]:hidden">
+                    <p className="font-semibold text-sm">Harshvardhan</p>
+                 </div>
+                 <Button variant="ghost" size="icon" className="h-8 w-8 group-data-[collapsible=icon]:hidden">
+                    <ChevronLeft className="h-4 w-4" />
+                 </Button>
+            </div>
         </SidebarHeader>
         <SidebarContent className="p-2">
-           <Button variant="ghost" size="sm" className="w-full justify-start gap-2 mb-2" onClick={onNewChat}>
-                <PlusCircle /> <span className="group-data-[collapsible=icon]:hidden">New Chat</span>
-           </Button>
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <NavItem icon={Home}><Link href="/">Home</Link></NavItem>
+                </SidebarMenuItem>
+                 <SidebarMenuItem>
+                    <NavItem icon={PlusCircle} onClick={onNewChat}>New Chat</NavItem>
+                </SidebarMenuItem>
+                 <SidebarMenuItem>
+                    <NavItem icon={LayoutGrid}>My Tasks</NavItem>
+                </SidebarMenuItem>
+                 <SidebarMenuItem>
+                    <NavItem icon={FolderKanban}>My Meetings</NavItem>
+                </SidebarMenuItem>
+                 <SidebarMenuItem>
+                    <NavItem icon={Save}>Saved Files</NavItem>
+                </SidebarMenuItem>
+                 <SidebarMenuItem>
+                    <NavItem icon={Share2}>Shared With Me</NavItem>
+                </SidebarMenuItem>
+            </SidebarMenu>
+
+            <Separator className="my-4 bg-border/20" />
+            
+             <div className="px-3 text-xs font-medium text-muted-foreground mb-2 group-data-[collapsible=icon]:hidden">
+                Today
+              </div>
             <SidebarMenu>
                 {conversations.map((convo) => (
                   <SidebarMenuItem key={convo.id}>
                     {editingConversationId === convo.id ? (
-                      <div className="flex items-center gap-1 w-full">
+                      <div className="flex items-center gap-1 w-full p-1">
                         <MessageSquare className="h-4 w-4 ml-2 flex-shrink-0" />
                         <Input
                           ref={inputRef}
@@ -137,7 +177,7 @@ export default function ChatLayout({
                             if (e.key === 'Escape') onStartRename('');
                           }}
                           onBlur={() => handleRenameSubmit(convo.id)}
-                          className="h-8 flex-1"
+                          className="h-8 flex-1 bg-secondary/80"
                         />
                         <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleRenameSubmit(convo.id)}>
                             <Check className="h-4 w-4" />
@@ -146,7 +186,7 @@ export default function ChatLayout({
                     ) : (
                       <div
                         className={cn(
-                          'group/item relative flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-sidebar-ring transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50',
+                          'group/item relative flex w-full items-center gap-2 overflow-hidden rounded-md px-3 py-2 text-left text-sm outline-none ring-sidebar-ring transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50',
                           convo.id === activeConversationId &&
                             'bg-sidebar-accent font-medium text-sidebar-accent-foreground'
                         )}
@@ -155,7 +195,6 @@ export default function ChatLayout({
                           onClick={() => onSwitchConversation(convo.id)}
                           className="flex items-center gap-2 flex-1 truncate"
                         >
-                          <MessageSquare className="h-4 w-4" />
                           <span className="truncate flex-1">{convo.title}</span>
                         </button>
                          <div className="flex items-center opacity-0 group-hover/item:opacity-100 absolute right-1 bg-sidebar-accent">
@@ -168,7 +207,7 @@ export default function ChatLayout({
                               onStartRename(convo.id);
                             }}
                           >
-                            <Pencil className="h-4 w-4 text-muted-foreground" />
+                            <Pencil className="h-3 w-3 text-muted-foreground" />
                           </Button>
                           <Button
                             variant="ghost"
@@ -179,7 +218,7 @@ export default function ChatLayout({
                               onDeleteConversation(convo.id);
                             }}
                           >
-                            <Trash2 className="h-4 w-4 text-muted-foreground" />
+                            <Trash2 className="h-3 w-3 text-muted-foreground" />
                           </Button>
                          </div>
                       </div>
@@ -188,13 +227,24 @@ export default function ChatLayout({
                 ))}
             </SidebarMenu>
         </SidebarContent>
+        <SidebarFooter className="p-4 group-data-[collapsible=icon]:hidden">
+          <div className="p-4 rounded-lg bg-primary/10 border border-primary/20 text-center">
+            <p className="text-sm font-semibold">Only 5 AI reports left</p>
+            <p className="text-xs text-muted-foreground mt-1">Get deeper insights with Pro</p>
+            <Button size="sm" className="w-full mt-3">Upgrade Now</Button>
+          </div>
+          <Separator className="my-4 bg-border/20" />
+           <NavItem icon={Settings}>Settings</NavItem>
+        </SidebarFooter>
       </Sidebar>
       <SidebarInset>
         <div className="flex flex-col h-screen bg-background">
-            <header className="flex items-center justify-between p-3 border-b border-border/10">
+            <header className="flex items-center justify-between p-3 border-b border-border/10 h-16">
                 <div className="flex items-center gap-2">
                     <SidebarTrigger />
-                    <h1 className="text-lg font-semibold font-headline">{activeConversation?.title || "AlgroAI Chat"}</h1>
+                    <Link href="/" className="md:hidden">
+                      <Logo className="h-6 w-auto text-primary glow-shadow-primary" />
+                    </Link>
                 </div>
                 <div className="flex items-center gap-2">
                     <DropdownMenu>
@@ -223,3 +273,5 @@ export default function ChatLayout({
     </SidebarProvider>
   );
 }
+
+    
