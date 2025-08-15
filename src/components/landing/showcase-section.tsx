@@ -3,11 +3,11 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import Image from 'next/image';
 
 const templates = [
-  { name: "AI Assistant", image: "https://placehold.co/600x400.png", hint: "AI assistant" },
-  { name: "AI Chatbot", image: "https://placehold.co/600x400.png", hint: "chatbot interface" },
-  { name: "SaaS Support Bot", image: "https://placehold.co/600x400.png", hint: "customer support" },
-  { name: "Portfolio Assistant", image: "https://placehold.co/600x400.png", hint: "portfolio design" },
-  { name: "E-commerce Bot", image: "https://placehold.co/600x400.png", hint: "online shopping" },
+  { name: "AI Assistant", image: "https://placehold.co/600x400/20102B/7DF9FF?text=Upcoming", hint: "AI assistant" },
+  { name: "AI Chatbot", image: "https://placehold.co/600x400/20102B/7DF9FF?text=Upcoming", hint: "chatbot interface" },
+  { name: "SaaS Support Bot", image: "https://placehold.co/600x400/20102B/7DF9FF?text=Upcoming", hint: "customer support" },
+  { name: "Portfolio Assistant", image: "https://placehold.co/600x400/20102B/7DF9FF?text=Upcoming", hint: "portfolio design" },
+  { name: "E-commerce Bot", image: "https://placehold.co/600x400/20102B/7DF9FF?text=Upcoming", hint: "online shopping" },
 ];
 
 export default function ShowcaseSection() {
