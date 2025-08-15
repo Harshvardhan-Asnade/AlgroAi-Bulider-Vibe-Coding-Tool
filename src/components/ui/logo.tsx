@@ -9,7 +9,7 @@ export default function Logo({ className }: { className?: string }) {
       )}
     >
       <span className="animate-shine bg-[linear-gradient(110deg,hsl(var(--foreground))_30%,45%,55%,hsl(var(--foreground))_70%)] bg-[length:250%_100%] bg-clip-text text-transparent">
-         Algro<span className="text-primary">Ai</span>
+        Algro<span className="text-primary">Ai</span>
       </span>
     </div>
   );
