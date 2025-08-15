@@ -3,11 +3,11 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import Image from 'next/image';
 
 const templates = [
-  { name: "AI Assistant", image: "https://placehold.co/600x400/20102B/7DF9FF?text=Upcoming", hint: "AI assistant" },
-  { name: "AI Chatbot", image: "https://placehold.co/600x400/20102B/7DF9FF?text=Upcoming", hint: "chatbot interface" },
-  { name: "SaaS Support Bot", image: "https://placehold.co/600x400/20102B/7DF9FF?text=Upcoming", hint: "customer support" },
-  { name: "Portfolio Assistant", image: "https://placehold.co/600x400/20102B/7DF9FF?text=Upcoming", hint: "portfolio design" },
-  { name: "E-commerce Bot", image: "https://placehold.co/600x400/20102B/7DF9FF?text=Upcoming", hint: "online shopping" },
+  { name: "AI Assistant", image: "https://images.unsplash.com/photo-1706170324680-b502c50981e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8QUklMjBhc3Npc3RhbnR8ZW58MHx8fHwxNzU1Mjg1ODQxfDA&ixlib=rb-4.1.0&q=80&w=1080", hint: "AI assistant" },
+  { name: "AI Chatbot", image: "https://images.unsplash.com/photo-1725798451557-fc60db3eb6a2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjaGF0Ym90JTIwaW50ZXJmYWNlfGVufDB8fHx8MTc1NTI4NTg0MXww&ixlib=rb-4.1.0&q=80&w=1080", hint: "chatbot interface" },
+  { name: "SaaS Support Bot", image: "https://images.unsplash.com/photo-1525182008055-f88b95ff7980?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjdXN0b21lciUyMHN1cHBvcnR8ZW58MHx8fHwxNzU1Mjg1ODQxfDA&ixlib=rb-4.1.0&q=80&w=1080", hint: "customer support" },
+  { name: "Portfolio Assistant", image: "https://images.unsplash.com/photo-1619209629065-e9a2b225b24b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwb3J0Zm9saW8lMjBkZXNpZ258ZW58MHx8fHwxNzU1Mjg1ODQxfDA&ixlib=rb-4.1.0&q=80&w=1080", hint: "portfolio design" },
+  { name: "E-commerce Bot", image: "https://images.unsplash.com/photo-1713646778050-2213b4140e6b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvbmxpbmUlMjBzaG9wcGluZ3xlbnwwfHx8fDE3NTUyODU4NDF8MA&ixlib=rb-4.1.0&q=80&w=1080", hint: "online shopping" },
 ];
 
 export default function ShowcaseSection() {
