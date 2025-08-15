@@ -8,7 +8,7 @@ export default function Logo({ className }: { className?: string }) {
         className
       )}
     >
-      AlgroAi
+      AlgroAi'
     </div>
   );
 }
