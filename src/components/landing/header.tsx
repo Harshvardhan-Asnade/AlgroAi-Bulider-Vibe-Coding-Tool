@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/ui/logo';
+import { Badge } from '../ui/badge';
 
 export default function Header() {
   return (
@@ -8,6 +9,7 @@ export default function Header() {
       <div className="flex items-center gap-4">
         <Link href="/" className="flex items-center gap-2 text-xl font-bold">
           <Logo className="h-8 w-auto glow-shadow-primary" />
+          <Badge variant="outline" className="text-xs border-primary/50 text-primary animate-pulse">beta v0.1</Badge>
         </Link>
       </div>
     </header>
