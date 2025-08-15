@@ -121,7 +121,7 @@ export default function ChatLayout({
 
   return (
     <SidebarProvider>
-      <Sidebar side="left" collapsible="icon" variant="sidebar" className="bg-background border-r border-border/20">
+      <Sidebar side="left" collapsible="icon" variant="sidebar" className="bg-secondary/30 border-r border-border/20">
         <SidebarHeader className="p-2 h-16 flex items-center">
             <div className="flex items-center gap-2 w-full p-2">
                  <Avatar className="w-8 h-8">
