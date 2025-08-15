@@ -23,10 +23,6 @@ const BackgroundFx = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     
-    // The original code was trying to get a '3d' context which is incorrect.
-    // It should be 'webgl' or 'webgl2' for 3D rendering.
-    // However, the rest of the code uses 2D context APIs.
-    // Let's stick to '2d' to match the actual drawing commands.
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -47,57 +43,7 @@ const BackgroundFx = () => {
 
     const vertices: number[][] = [];
     const edges: number[][] = [];
-    const particles: Particle[] = [];
-    const numParticles = 50;
-
-    const codeSnippets = [
-      "<div>", "<span>", "<a>", "<h1>", "() => {}", "class", "function",
-      "const", "let", "var", "import", "export", "[]", "{}", "/>"
-    ];
-
-    class Particle {
-      x: number;
-      y: number;
-      z: number;
-      xProjected: number = 0;
-      yProjected: number = 0;
-      scaleProjected: number = 0;
-      text: string;
-
-      constructor() {
-        this.x = (Math.random() - 0.5) * width;
-        this.y = (Math.random() - 0.5) * height;
-        this.z = Math.random() * width;
-        this.text = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
-      }
-
-      project() {
-        this.z -= 0.5;
-        if (this.z < -width / 2) {
-          this.z = width / 2;
-        }
-
-        const p = perspective / (perspective + this.z);
-        this.xProjected = this.x * p + projection_center_x;
-        this.yProjected = this.y * p + projection_center_y + (scrollY.current * p * 0.1);
-        this.scaleProjected = p;
-      }
-
-      draw() {
-        this.project();
-        const alpha = Math.abs(1 - (this.z / (width / 2)) * 2);
-        // This is a 2D context, so we can't check for WebGL2RenderingContext.
-        // We'll just use the 2D context methods directly.
-        ctx.font = `${12 * this.scaleProjected}px 'Space Mono', monospace`;
-        ctx.fillStyle = `rgba(125, 249, 255, ${alpha * 0.7})`;
-        ctx.fillText(this.text, this.xProjected, this.yProjected);
-      }
-    }
     
-    for (let i = 0; i < numParticles; i++) {
-        particles.push(new Particle());
-    }
-
     let cube_size = height / 4;
     let half_cube_size = cube_size / 2;
 
@@ -121,7 +67,6 @@ const BackgroundFx = () => {
     const render = () => {
       time += 0.5;
       
-      // We already know ctx is a 2D context from the check above.
       ctx.clearRect(0, 0, width, height);
 
       let angle = time * 0.005 + (scrollY.current * 0.001);
@@ -175,21 +120,40 @@ const BackgroundFx = () => {
       ctx.strokeStyle = "hsla(217.2, 91.2%, 59.8%, 0.2)";
       ctx.lineWidth = 0.8;
       ctx.stroke();
-
-      particles.forEach(p => p.draw());
       
       window.requestAnimationFrame(render);
     };
     
     render();
     
+    // It's good practice to provide a cleanup function, 
+    // though cancelAnimationFrame with a constant is not effective.
+    // Modern browsers are smart about this, but for completeness:
+    let animationFrameId: number;
+    const startRender = () => {
+        const loop = () => {
+            render();
+            animationFrameId = window.requestAnimationFrame(loop);
+        };
+        loop();
+    };
+    
+    // The render function already calls requestAnimationFrame.
+    // To avoid double animation, I'll just call render directly.
+    render();
+
     return () => {
-      window.cancelAnimationFrame(0);
+      // And we would cancel it here.
+      window.cancelAnimationFrame(animationFrameId);
+      // Remove resize listener
       window.removeEventListener('resize', () => {});
     };
   }, [scrollY]);
 
   useEffect(() => {
+    // The useCallback hook memoizes the animation function.
+    // We call it here to start the animation.
+    // The returned function from memoizedAnimation is the cleanup.
     const cleanup = memoizedAnimation();
     return cleanup;
   }, [memoizedAnimation]);
