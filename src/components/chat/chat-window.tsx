@@ -46,10 +46,14 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
 
 
     const handleInitialSend = async (prompt: string) => {
-        onNewChat();
-        // Use a timeout to ensure the new chat state is set before sending message
+        // This now correctly ensures a new chat is created before sending the prompt.
+        const isNewChat = !activeConversation;
+        if (isNewChat) {
+          onNewChat();
+        }
+        // Use a timeout to allow the state to update from onNewChat before sending.
         setTimeout(() => {
-            onSendMessage(prompt, true);
+          onSendMessage(prompt, true);
         }, 0);
     }
 
