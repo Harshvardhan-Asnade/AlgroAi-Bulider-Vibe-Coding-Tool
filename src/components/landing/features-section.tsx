@@ -1,11 +1,11 @@
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { BotMessageSquare, CodeXml, Combine, MonitorPlay } from 'lucide-react';
+import { BotMessageSquare, BrainCircuit, Blocks, GitBranchPlus } from 'lucide-react';
 
 const features = [
-  { icon: <BotMessageSquare className="h-6 w-6"/>, title: "Natural Language to App", description: "From simple text to a full-fledged application." },
-  { icon: <CodeXml className="h-6 w-6"/>, title: "Full-Stack Output", description: "Generates UI, backend, auth, and database schemas." },
-  { icon: <Combine className="h-6 w-6"/>, title: "Figma & Sketch Import", description: "Turn your static designs into interactive applications." },
-  { icon: <MonitorPlay className="h-6 w-6"/>, title: "Live Preview & Deploy", description: "Visualize your app in real-time and deploy instantly." },
+  { icon: <BotMessageSquare className="h-6 w-6"/>, title: "Conversational Development", description: "Describe your app, and our AI will ask questions to refine it." },
+  { icon: <BrainCircuit className="h-6 w-6"/>, title: "Context-Aware Logic", description: "The AI understands context to generate relevant code and logic." },
+  { icon: <Blocks className="h-6 w-6"/>, title: "Modular Codebase", description: "Get clean, production-ready code that's easy to understand and maintain." },
+  { icon: <GitBranchPlus className="h-6 w-6"/>, title: "Iterative Feedback", description: "Refine your app by chatting. The AI updates the code as you go." },
 ];
 
 export default function FeaturesSection() {

@@ -1,21 +1,21 @@
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Edit3, Zap, Paintbrush } from 'lucide-react';
+import { BotMessageSquare, Code, Rocket } from 'lucide-react';
 
 const steps = [
   {
-    icon: <Edit3 className="h-8 w-8 text-primary" />,
-    title: 'Prompt Your Idea',
-    description: 'Describe your application in plain English. The more detail, the better the result.',
+    icon: <BotMessageSquare className="h-8 w-8 text-primary" />,
+    title: 'Start the Conversation',
+    description: 'Describe your application in plain English. The AI will ask clarifying questions.',
   },
   {
-    icon: <Zap className="h-8 w-8 text-primary" />,
-    title: 'AI Generates Code',
-    description: 'Our advanced AI analyzes your prompt and generates full-stack code in seconds.',
+    icon: <Code className="h-8 w-8 text-primary" />,
+    title: 'AI Generates the Code',
+    description: 'Our AI analyzes the conversation and generates full-stack code in seconds.',
   },
   {
-    icon: <Paintbrush className="h-8 w-8 text-primary" />,
-    title: 'Preview & Deploy',
-    description: 'Instantly preview your creation, make tweaks, and deploy with a single click.',
+    icon: <Rocket className="h-8 w-8 text-primary" />,
+    title: 'Review and Deploy',
+    description: 'Instantly preview your creation, continue the chat to iterate, and deploy.',
   },
 ];
 
@@ -26,7 +26,7 @@ export default function HowItWorks() {
         <div className="text-center">
           <h2 className="text-3xl md:text-4xl font-bold font-headline">How It Works</h2>
           <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-            A simple three-step process to bring your ideas to life.
+            A simple, conversational process to bring your ideas to life.
           </p>
         </div>
         <div className="mt-12 grid gap-8 md:grid-cols-3">

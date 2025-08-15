@@ -1,13 +1,13 @@
 "use client";
 
-import { BrainCircuit, FileCode, Server, Rocket } from 'lucide-react';
+import { MessageSquare, Cpu, Box, Rocket } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 const pipelineSteps = [
-    { icon: BrainCircuit, title: "Your Idea", description: "It starts with a spark of genius." },
-    { icon: FileCode, title: "Code Generation", description: "AI translates your concept into clean code." },
-    { icon: Server, title: "App Build", description: "Backend, frontend, and database are constructed." },
+    { icon: MessageSquare, title: "Your Prompt", description: "It starts with a simple conversation." },
+    { icon: Cpu, title: "AI Understanding", description: "The AI processes and understands your requirements." },
+    { icon: Box, title: "Code Generation", description: "Clean, full-stack code is generated based on the chat." },
     { icon: Rocket, title: "Deployment", description: "Your app goes live, ready for the world." },
 ];
 
@@ -16,9 +16,9 @@ export default function PipelineSection() {
         <section id="pipeline" className="w-full py-20 lg:py-32">
             <div className="container mx-auto px-4">
                 <div className="text-center">
-                    <h2 className="text-3xl md:text-4xl font-bold font-headline">From Idea to App</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold font-headline">From Chat to App</h2>
                     <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-                        Witness the automated pipeline that brings your creations to life.
+                        Witness the automated pipeline that brings your conversations to life.
                     </p>
                 </div>
                 <div className="mt-20 max-w-2xl mx-auto">
