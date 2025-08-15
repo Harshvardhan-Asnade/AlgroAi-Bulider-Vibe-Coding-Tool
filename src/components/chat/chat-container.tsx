@@ -17,6 +17,7 @@ export interface Conversation {
     id: string;
     title: string;
     messages: Message[];
+    isAutoTitled?: boolean; // Track if the title was set by AI
 }
 
 export default function ChatContainer() {
@@ -32,7 +33,7 @@ export default function ChatContainer() {
         if (savedConversations) {
             const parsedConversations = JSON.parse(savedConversations);
             setConversations(parsedConversations);
-            if (parsedConversations.length > 0) {
+            if (parsedConversations.length > 0 && !activeConversationId) {
                 setActiveConversationId(parsedConversations[0].id);
             }
         }
@@ -52,6 +53,7 @@ export default function ChatContainer() {
             id: Date.now().toString(),
             title: title,
             messages: initialMessage ? [initialMessage] : [],
+            isAutoTitled: false,
         };
         setConversations(prev => [newConversation, ...prev]);
         setActiveConversationId(newConversation.id);
@@ -62,7 +64,6 @@ export default function ChatContainer() {
         setIsLoading(true);
         const userMessage: Message = { id: Date.now().toString(), role: 'user', content: prompt };
         
-        // Create a new conversation with a temporary title
         const newConversation = createNewConversation('New Chat', userMessage);
 
         const historyForApi = [{ role: 'user' as const, content: prompt }];
@@ -73,10 +74,9 @@ export default function ChatContainer() {
 
         if (summaryResponse.success && summaryResponse.data) {
             setConversations(prev => prev.map(c => 
-                c.id === newConversation.id ? { ...c, title: summaryResponse.data.title } : c
+                c.id === newConversation.id ? { ...c, title: summaryResponse.data.title, isAutoTitled: true } : c
             ));
         }
-
 
         if (response.success && response.data) {
             const botMessage: Message = { id: (Date.now() + 1).toString(), role: 'model', content: response.data.response };
@@ -94,7 +94,7 @@ export default function ChatContainer() {
 
     useEffect(() => {
         const initialPrompt = searchParams.get('prompt');
-        // Only trigger if there's a prompt and no conversations have started from it yet.
+        // Only trigger if there's a prompt and no conversations have started.
         if (initialPrompt && conversations.length === 0) {
              handleInitialPrompt(initialPrompt);
         }
@@ -105,6 +105,10 @@ export default function ChatContainer() {
 
         const userMessage: Message = { id: Date.now().toString(), role: 'user', content: message };
 
+        const currentConversation = conversations.find(c => c.id === activeConversationId);
+        const isFirstMessage = currentConversation?.messages.length === 0;
+
+        // Update conversation with the new user message first
         setConversations(prev =>
             prev.map(c =>
                 c.id === activeConversationId ? { ...c, messages: [...c.messages, userMessage] } : c
@@ -112,11 +116,24 @@ export default function ChatContainer() {
         );
         setIsLoading(true);
 
-        const currentConversation = conversations.find(c => c.id === activeConversationId);
-        const historyForApi = [...(currentConversation?.messages || []), userMessage].map(msg => ({ role: msg.role, content: msg.content }));
+        const updatedConversation = conversations.find(c => c.id === activeConversationId);
+        const historyForApi = [...(updatedConversation?.messages || []), userMessage].map(msg => ({ role: msg.role, content: msg.content }));
 
-        const response = await handleChat({ messages: historyForApi });
+        const chatPromise = handleChat({ messages: historyForApi });
+        
+        // Only summarize if it's the first message and the title hasn't been manually set
+        const summaryPromise = (isFirstMessage && !currentConversation?.isAutoTitled)
+            ? handleSummarize({ message: message })
+            : Promise.resolve(null);
 
+        const [response, summaryResponse] = await Promise.all([chatPromise, summaryPromise]);
+
+        if (summaryResponse && summaryResponse.success && summaryResponse.data) {
+             setConversations(prev => prev.map(c => 
+                c.id === activeConversationId ? { ...c, title: summaryResponse.data.title, isAutoTitled: true } : c
+            ));
+        }
+        
         if (response.success && response.data) {
             const botMessage: Message = { id: (Date.now() + 1).toString(), role: 'model', content: response.data.response };
             setConversations(prev =>
@@ -136,7 +153,7 @@ export default function ChatContainer() {
     };
 
     const handleNewChat = () => {
-        const newConversation = createNewConversation();
+        createNewConversation();
     };
 
     const handleSwitchConversation = (id: string) => {
@@ -145,14 +162,17 @@ export default function ChatContainer() {
     };
 
     const handleDeleteConversation = (id: string) => {
-        setConversations(prev => prev.filter(c => c.id !== id));
-        if (activeConversationId === id) {
-            setActiveConversationId(conversations.length > 1 ? conversations.filter(c => c.id !== id)[0].id : null);
-        }
+        setConversations(prev => {
+            const newConversations = prev.filter(c => c.id !== id);
+            if (activeConversationId === id) {
+                setActiveConversationId(newConversations.length > 0 ? newConversations[0].id : null);
+            }
+            return newConversations;
+        });
     };
 
     const handleRenameConversation = (id: string, newTitle: string) => {
-        setConversations(prev => prev.map(c => c.id === id ? { ...c, title: newTitle } : c));
+        setConversations(prev => prev.map(c => c.id === id ? { ...c, title: newTitle, isAutoTitled: false } : c)); // Set isAutoTitled to false on manual rename
         setEditingConversationId(null);
     }
     
@@ -173,6 +193,7 @@ export default function ChatContainer() {
                 activeConversation={activeConversation}
                 isLoading={isLoading}
                 onSendMessage={handleSendMessage}
+                onNewChat={handleNewChat}
             />
         </ChatLayout>
     );

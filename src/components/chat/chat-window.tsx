@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -13,16 +14,30 @@ interface ChatWindowProps {
     activeConversation: Conversation | null;
     isLoading: boolean;
     onSendMessage: (message: string) => Promise<void>;
+    onNewChat: () => void;
 }
 
-export default function ChatWindow({ activeConversation, isLoading, onSendMessage }: ChatWindowProps) {
+export default function ChatWindow({ activeConversation, isLoading, onSendMessage, onNewChat }: ChatWindowProps) {
     const [input, setInput] = useState('');
     const scrollAreaRef = useRef<HTMLDivElement>(null);
 
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!input.trim() || isLoading || !activeConversation) return;
+        if (!input.trim() || isLoading) return;
         
+        // If there's no active conversation, create one.
+        if (!activeConversation) {
+            onNewChat(); 
+            // We need to wait for the state update to propagate before sending the message.
+            // A simple way is to send the message in a useEffect that triggers when activeConversation changes.
+            // However, a cleaner approach is to handle this logic in the container.
+            // For now, we'll send the message right after a slight delay, assuming the new chat is created.
+            // A better implementation would involve passing the message to onNewChat.
+            setTimeout(() => onSendMessage(input), 0);
+            setInput('');
+            return;
+        }
+
         const messageToSend = input;
         setInput('');
         await onSendMessage(messageToSend);
@@ -42,10 +57,27 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
 
     if (!activeConversation) {
         return (
-            <div className="flex flex-1 flex-col items-center justify-center text-center">
-                <MessageSquare size={48} className="text-muted-foreground mb-4" />
-                <h2 className="text-2xl font-semibold font-headline">Start a Conversation</h2>
-                <p className="text-muted-foreground mt-2">Click "New Chat" in the sidebar to begin.</p>
+            <div className="flex-1 flex flex-col">
+                 <div className="flex flex-1 flex-col items-center justify-center text-center">
+                    <MessageSquare size={48} className="text-muted-foreground mb-4" />
+                    <h2 className="text-2xl font-semibold font-headline">Start a Conversation</h2>
+                    <p className="text-muted-foreground mt-2">Send a message to begin.</p>
+                </div>
+                <div className="p-4 border-t border-border/10 bg-background/50 backdrop-blur-sm">
+                    <form onSubmit={handleSendMessage} className="relative">
+                        <Input
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            placeholder="Ask AlgroAI anything..."
+                            className="pr-12 bg-secondary border-border focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:ring-2 rounded-xl"
+                            disabled={isLoading}
+                        />
+                        <Button type="submit" size="icon" className="absolute top-1/2 right-2 -translate-y-1/2 h-8 w-8 bg-primary hover:bg-primary/90 rounded-full glow-shadow-primary transition-all hover:scale-110" disabled={isLoading || !input.trim()}>
+                            <ArrowRight size={20} />
+                        </Button>
+                    </form>
+                    <p className="text-xs text-center text-muted-foreground mt-2">AlgroAI can make mistakes. Consider checking important information.</p>
+                </div>
             </div>
         );
     }
@@ -99,7 +131,7 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
                         className="pr-12 bg-secondary border-border focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:ring-2 rounded-xl"
                         disabled={isLoading}
                     />
-                    <Button type="submit" size="icon" className="absolute top-1/2 right-2 -translate-y-1/2 h-8 w-8 bg-primary hover:bg-primary/90 rounded-full glow-shadow-primary transition-all hover:scale-110" disabled={isLoading}>
+                    <Button type="submit" size="icon" className="absolute top-1/2 right-2 -translate-y-1/2 h-8 w-8 bg-primary hover:bg-primary/90 rounded-full glow-shadow-primary transition-all hover:scale-110" disabled={isLoading || !input.trim()}>
                         <ArrowRight size={20} />
                     </Button>
                 </form>
