@@ -9,7 +9,7 @@ export default function Header() {
       <div className="flex items-center gap-4">
         <Link href="/" className="flex items-center gap-2 text-xl font-bold">
           <Logo className="h-8 w-auto glow-shadow-primary" />
-          <Badge variant="outline" className="text-xs border-primary/50 text-primary animate-pulse">beta v0.1</Badge>
+          <Badge variant="outline" className="text-xs border-primary/50 text-primary animate-pulse">Beta</Badge>
         </Link>
       </div>
       <div className="flex items-center gap-4">
