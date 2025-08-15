@@ -16,7 +16,7 @@ const SummarizeChatInputSchema = z.object({
 export type SummarizeChatInput = z.infer<typeof SummarizeChatInputSchema>;
 
 const SummarizeChatOutputSchema = z.object({
-  title: z.string().describe('A short, concise title for the chat (3-5 words).'),
+  title: z.string().describe('A short, clear, and descriptive title for the conversation.'),
 });
 export type SummarizeChatOutput = z.infer<typeof SummarizeChatOutputSchema>;
 
@@ -28,9 +28,20 @@ const prompt = ai.definePrompt({
   name: 'summarizeChatPrompt',
   input: {schema: SummarizeChatInputSchema},
   output: {schema: SummarizeChatOutputSchema},
-  prompt: `Generate a short, concise title (3-5 words) for a chat conversation that starts with the following message.
+  prompt: `You are an assistant that generates short, clear, and descriptive titles for conversations.
+Rules:
+- Maximum 5 words
+- No punctuation unless necessary
+- Capitalize main words
+- Make it specific, not generic
+- Do not include the words "chat", "conversation", or "discussion"
 
-  Message: {{{message}}}
+Example:
+User: "Explain closures in JavaScript" → "JavaScript Closures Explained"
+User: "Help me debug this React hook" → "Debugging React Hook"
+User: "Summarize World War 2 in short" → "WW2 Summary"
+
+Message: {{{message}}}
   `,
 });
 
