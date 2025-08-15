@@ -52,4 +52,4 @@ Personalized AI suggestions
 
 Integration with external apps
 
-AlgroChat AI – Search, Learn, Explore, and Chat, all in one place
+AlgroChat AI – Search, Learn, Explore, and Chat, all in one place .
