@@ -13,7 +13,7 @@ export default function Header() {
         </Link>
       </div>
       <div className="text-sm text-muted-foreground">
-        (version 0.1)
+        version 0.1
       </div>
       <div className="flex items-center gap-4">
         <Link href="/chat">
