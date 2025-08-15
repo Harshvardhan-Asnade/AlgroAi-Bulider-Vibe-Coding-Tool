@@ -12,7 +12,6 @@ import { Input } from '../ui/input';
 import jsPDF from 'jspdf';
 import { cn } from '@/lib/utils';
 import Logo from '../ui/logo';
-import { Avatar, AvatarFallback } from '../ui/avatar';
 import { Separator } from '../ui/separator';
 
 interface ChatLayoutProps {
@@ -122,17 +121,12 @@ export default function ChatLayout({
   return (
     <SidebarProvider>
       <Sidebar side="left" collapsible="icon" variant="sidebar" className="bg-secondary/30 border-r border-border/20">
-        <SidebarHeader className="p-2 h-16 flex items-center">
-            <div className="flex items-center gap-2 w-full p-2">
-                 <Avatar className="w-8 h-8">
-                     <AvatarFallback>HA</AvatarFallback>
-                 </Avatar>
-                 <div className="flex-1 truncate group-data-[collapsible=icon]:hidden">
-                    <p className="font-semibold text-sm">Harshvardhan</p>
-                 </div>
-                 <Button variant="ghost" size="icon" className="h-8 w-8 group-data-[collapsible=icon]:hidden">
-                    <ChevronLeft className="h-4 w-4" />
-                 </Button>
+        <SidebarHeader className="p-2 h-16 flex items-center justify-center">
+            <div className="flex items-center gap-2 group-data-[collapsible=icon]:hidden">
+                <Logo className="h-6 w-auto text-primary glow-shadow-primary" />
+            </div>
+             <div className="hidden items-center gap-2 group-data-[collapsible=icon]:flex">
+                <Logo className="h-6 w-auto text-primary glow-shadow-primary" />
             </div>
         </SidebarHeader>
         <SidebarContent className="p-2">
