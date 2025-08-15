@@ -6,10 +6,10 @@ export default function HeroSection() {
       <div className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-primary/20 rounded-full blur-3xl animate-pulse" />
       <div className="absolute -bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-accent/20 rounded-full blur-3xl animate-pulse animation-delay-4000" />
       <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-tight max-w-4xl font-headline">
-        Build Apps with <span className="text-gradient">Natural Language</span>
+        Chat with <span className="text-gradient">Natural Language</span>
       </h1>
       <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-        Your words. Our AI. Complete apps — built, designed, and deployed.
+        Chat Smarter, Build Faster with AlgroAI
       </p>
       <div className="mt-8 w-full max-w-2xl">
         <PromptForm />
