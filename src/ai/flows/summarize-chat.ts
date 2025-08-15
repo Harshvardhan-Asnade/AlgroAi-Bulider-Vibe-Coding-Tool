@@ -28,21 +28,13 @@ const prompt = ai.definePrompt({
   name: 'summarizeChatPrompt',
   input: {schema: SummarizeChatInputSchema},
   output: {schema: SummarizeChatOutputSchema},
-  prompt: `You are an assistant that generates short, clear, and descriptive titles for conversations.
-Rules:
-- Maximum 5 words
-- No punctuation unless necessary
-- Capitalize main words
-- Make it specific, not generic
-- Do not include the words "chat", "conversation", or "discussion"
+  prompt: `You are a smart assistant that creates short, clear, and descriptive titles for chat conversations. 
+Generate a title (3-5 words) that summarizes the main topic of this chat:
 
-Example:
-User: "Explain closures in JavaScript" → "JavaScript Closures Explained"
-User: "Help me debug this React hook" → "Debugging React Hook"
-User: "Summarize World War 2 in short" → "WW2 Summary"
+Conversation:
+"{{{message}}}"
 
-Message: {{{message}}}
-  `,
+Only return the title, no extra text or punctuation.`,
 });
 
 const summarizeChatFlow = ai.defineFlow(
