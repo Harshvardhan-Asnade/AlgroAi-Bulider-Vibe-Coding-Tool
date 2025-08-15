@@ -53,14 +53,12 @@ export default function PromptForm() {
   };
 
   const handleExampleClick = (prompt: string) => {
+    if (isLoading) return;
     form.setValue('prompt', prompt);
-    const textarea = textareaRef.current;
-    if (textarea) {
-        setTimeout(() => {
-            textarea.style.height = 'auto';
-            textarea.style.height = `${textarea.scrollHeight}px`;
-        }, 0);
-    }
+    // Use a timeout to ensure the state has updated before submitting
+    setTimeout(() => {
+        form.handleSubmit(onSubmit)();
+    }, 0);
   };
   
   useEffect(() => {
