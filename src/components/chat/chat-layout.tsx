@@ -2,12 +2,14 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { SidebarProvider, Sidebar, SidebarTrigger, SidebarContent, SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
+import { SidebarProvider, Sidebar, SidebarTrigger, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Download, PlusCircle, Trash2, CodeXml, MessageSquare, Pencil, Check } from 'lucide-react';
 import Link from 'next/link';
 import type { Conversation } from './chat-container';
 import { Input } from '../ui/input';
+import jsPDF from 'jspdf';
 
 interface ChatLayoutProps {
   conversations: Conversation[];
@@ -49,6 +51,61 @@ export default function ChatLayout({
     if (renameInput.trim()) {
       onRenameConversation(id, renameInput.trim());
     }
+  };
+
+  const generateChatString = () => {
+    if (!activeConversation) return '';
+    return activeConversation.messages.map(m => {
+        const prefix = m.role === 'user' ? 'You:' : 'AlgroAI:';
+        return `${prefix} ${m.content}`;
+    }).join('\n\n');
+  };
+
+  const handleExportToTxt = () => {
+    const chatContent = generateChatString();
+    if (!chatContent) return;
+
+    const blob = new Blob([chatContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'chat-history.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportToPdf = () => {
+    if (!activeConversation) return;
+
+    const doc = new jsPDF();
+    const margin = 10;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const usableWidth = pageWidth - margin * 2;
+    let y = margin;
+    
+    doc.setFontSize(16);
+    doc.text(activeConversation.title, pageWidth / 2, y, { align: 'center' });
+    y += 10;
+    
+    doc.setFontSize(12);
+
+    activeConversation.messages.forEach(message => {
+        if (y > pageHeight - margin) {
+            doc.addPage();
+            y = margin;
+        }
+
+        const prefix = message.role === 'user' ? 'You:' : 'AlgroAI:';
+        const textLines = doc.splitTextToSize(`${prefix} ${message.content}`, usableWidth);
+        
+        doc.text(textLines, margin, y);
+        y += textLines.length * 7; // Approximate line height
+    });
+
+    doc.save('chat-history.pdf');
   };
 
   return (
@@ -132,7 +189,15 @@ export default function ChatLayout({
                     <h1 className="text-lg font-semibold font-headline">{activeConversation?.title || "AlgroAI Chat"}</h1>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" disabled={!activeConversationId}><Download className="h-4 w-4 mr-2" /> Export</Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" disabled={!activeConversationId}><Download className="h-4 w-4 mr-2" /> Export</Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuItem onClick={handleExportToPdf}>Export as PDF</DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleExportToTxt}>Export as TXT</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                     <Button 
                       variant="ghost" 
                       size="sm" 
