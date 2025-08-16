@@ -1,27 +1,30 @@
 
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { FileText, Image, FileDown, AppWindow } from 'lucide-react';
 import Link from 'next/link';
 
 const tools = [
   { 
-    icon: <FileText className="h-6 w-6 text-primary" />, 
+    icon: <FileText className="h-8 w-8 text-primary" />, 
     title: "Text ➝ PDF Converter", 
+    description: "Convert any text into a professional PDF document.",
     href: "/tools/text-to-pdf" 
   },
   { 
-    icon: <Image className="h-6 w-6 text-primary" />, 
+    icon: <Image className="h-8 w-8 text-primary" />, 
     title: "Image ➝ PDF Converter", 
+    description: "Combine multiple images into a single PDF file.",
     href: "/tools/image-to-pdf" 
   },
   { 
-    icon: <FileDown className="h-6 w-6 text-primary" />, 
-    title: "PDF ➝ Word / Excel / Text Extractor", 
+    icon: <FileDown className="h-8 w-8 text-primary" />, 
+    title: "PDF ➝ Word / Excel", 
+    description: "Extract text and data from PDFs into editable formats.",
     href: "/tools/pdf-extractor" 
   },
   { 
-    icon: <AppWindow className="h-6 w-6 text-primary" />, 
+    icon: <AppWindow className="h-8 w-8 text-primary" />, 
     title: "All Tools", 
+    description: "Explore our full suite of powerful conversion tools.",
     href: "/tools" 
   },
 ];
@@ -30,19 +33,18 @@ export default function ToolsSection() {
     return (
         <section id="tools" className="w-full pb-12 -mt-10">
             <div className="container mx-auto px-4">
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
                     {tools.map((tool) => (
                         <Link href={tool.href} key={tool.title} className="group">
-                            <Card 
-                              className="text-center p-4 border-border/20 bg-secondary/30 hover:bg-secondary/80 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10"
-                            >
-                                <CardHeader className="flex flex-col items-center justify-center p-2">
-                                    <div className="mb-2">
+                           <div className="relative p-px rounded-3xl bg-gradient-to-b from-primary/50 to-accent/50 transition-all duration-300 group-hover:bg-gradient-to-b group-hover:from-primary group-hover:to-accent">
+                                <div className="relative bg-gradient-to-b from-background to-secondary/50 rounded-3xl p-6 h-full">
+                                    <div className="mb-4">
                                         {tool.icon}
                                     </div>
-                                    <CardTitle className="text-sm font-semibold">{tool.title}</CardTitle>
-                                </CardHeader>
-                            </Card>
+                                    <h3 className="text-lg font-bold text-foreground mb-2">{tool.title}</h3>
+                                    <p className="text-sm text-muted-foreground">{tool.description}</p>
+                                </div>
+                            </div>
                         </Link>
                     ))}
                 </div>
