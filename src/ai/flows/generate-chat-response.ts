@@ -58,9 +58,7 @@ const generateChatResponseFlow = ai.defineFlow(
       model: 'googleai/gemini-2.0-flash',
       prompt: lastUserMessage.content,
       history,
-      config: {
-        systemPrompt,
-      },
+      systemPrompt,
       output: {
         schema: GenerateChatOutputSchema,
       },
