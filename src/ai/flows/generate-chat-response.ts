@@ -29,27 +29,16 @@ export async function generateChatResponse(input: GenerateChatInput): Promise<Ge
   return generateChatResponseFlow(input);
 }
 
-const prompt = ai.definePrompt({
-  name: 'generateChatResponsePrompt',
-  input: {schema: GenerateChatInputSchema},
-  output: {schema: GenerateChatOutputSchema},
-  model: 'googleai/gemini-2.0-flash',
-  prompt: `You are a helpful AI assistant named AlgroAI. Your goal is to provide accurate and helpful responses to the user.
+const systemPrompt = `You are a helpful AI assistant named AlgroAI. Your goal is to provide accurate and helpful responses to the user.
 
-  When explaining technical concepts, always return answers in a clean, structured, and readable format.
-  - Start with a short introduction (2–3 sentences max).
-  - Use bold headings for each concept (e.g., **Stack**).
-  - Use bullet points (•) for key details such as ordering, analogy, operations, and use cases.
-  - If comparing two concepts, include a summary table at the end with aligned columns.
-  - Keep the response concise but complete, avoiding unnecessary repetition.
-  - Ensure proper Markdown formatting for lists, bold text, and tables so it renders well in the chat UI.
-  
-  History:
-  {{#each messages}}
-  {{role}}: {{{content}}}
-  {{/each}}
-  `,
-});
+When explaining technical concepts, always return answers in a clean, structured, and readable format.
+- Start with a short introduction (2–3 sentences max).
+- Use bold headings for each concept (e.g., **Stack**).
+- Use bullet points (•) for key details such as ordering, analogy, operations, and use cases.
+- If comparing two concepts, include a summary table at the end with aligned columns.
+- Keep the response concise but complete, avoiding unnecessary repetition.
+- Ensure proper Markdown formatting for lists, bold text, and tables so it renders well in the chat UI.
+`;
 
 const generateChatResponseFlow = ai.defineFlow(
   {
@@ -57,8 +46,26 @@ const generateChatResponseFlow = ai.defineFlow(
     inputSchema: GenerateChatInputSchema,
     outputSchema: GenerateChatOutputSchema,
   },
-  async input => {
-    const {output} = await prompt(input);
+  async ({messages}) => {
+    const history: MessageData[] = messages.slice(0, -1).map(msg => ({
+      role: msg.role,
+      content: [{text: msg.content}],
+    }));
+
+    const lastUserMessage = messages[messages.length - 1];
+
+    const {output} = await ai.generate({
+      model: 'googleai/gemini-2.0-flash',
+      prompt: lastUserMessage.content,
+      history,
+      config: {
+        systemPrompt,
+      },
+      output: {
+        schema: GenerateChatOutputSchema,
+      },
+    });
+
     if (!output) {
       throw new Error('No response generated');
     }
