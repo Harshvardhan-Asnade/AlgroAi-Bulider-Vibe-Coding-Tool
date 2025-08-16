@@ -17,14 +17,10 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const examplePrompts = [
-    "Plan a 5-day trip to Japan",
+    "Python vs C++ vs Java",
     "Python script for bubble sort",
     "Help with password recovery",
-    "Explain mitosis vs. meiosis",
-    "Top 3 smartphones under ₹20k",
-    "Weekly diet plan for better sleep",
     "Email for a deadline extension",
-    "Best E-sport Org in India"
 ];
 
 export default function PromptForm() {
