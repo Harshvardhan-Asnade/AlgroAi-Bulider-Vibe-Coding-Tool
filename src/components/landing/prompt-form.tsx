@@ -24,7 +24,7 @@ const examplePrompts = [
     "Top 3 smartphones under ₹20k",
     "Weekly diet plan for better sleep",
     "Email for a deadline extension",
-    "To-do list for today"
+    "Best E-sport Org in India"
 ];
 
 export default function PromptForm() {
