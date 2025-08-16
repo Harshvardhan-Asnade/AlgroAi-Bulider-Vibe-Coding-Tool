@@ -58,24 +58,10 @@ const generateChatResponseFlow = ai.defineFlow(
     outputSchema: GenerateChatOutputSchema,
   },
   async input => {
-    const history: MessageData[] = input.messages.map(msg => ({
-      role: msg.role,
-      content: [{text: msg.content}],
-    }));
-
-    const llmResponse = await ai.generate({
-      model: 'googleai/gemini-2.0-flash',
-      history: history,
-      prompt: input.messages[history.length - 1].content,
-      output: {
-        schema: GenerateChatOutputSchema,
-      },
-    });
-
-    const response = llmResponse.output;
-    if (!response) {
+    const {output} = await prompt(input);
+    if (!output) {
       throw new Error('No response generated');
     }
-    return response;
+    return output;
   }
 );
