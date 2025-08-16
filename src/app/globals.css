@@ -75,6 +75,7 @@
   }
   html {
     @apply dark;
+    font-size: 90%;
   }
   
   svg#gooey-filter { 
