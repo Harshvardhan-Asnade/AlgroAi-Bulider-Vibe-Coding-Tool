@@ -75,6 +75,7 @@
   }
   html {
     @apply dark;
+    scroll-behavior: smooth;
   }
   
   svg#gooey-filter { 

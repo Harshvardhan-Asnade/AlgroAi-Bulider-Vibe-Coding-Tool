@@ -101,8 +101,8 @@ export default function PromptForm() {
             <p className="text-sm text-destructive">{form.formState.errors.prompt.message}</p>
         )}
       </form>
-       <div className="mt-8 flex flex-wrap justify-center items-start gap-2 max-w-4xl">
-          <span className="text-sm text-muted-foreground mr-2 mt-1.5">Examples:</span>
+       <div className="mt-8 flex flex-wrap justify-center items-center gap-2 max-w-4xl">
+          <span className="text-sm text-muted-foreground mr-2">Examples:</span>
           {examplePrompts.map((prompt) => (
             <button
                 key={prompt}

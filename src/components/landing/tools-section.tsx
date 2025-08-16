@@ -48,7 +48,7 @@ export default function ToolsSection() {
                     {tools.map((tool) => (
                         <div key={tool.title} className="group cursor-pointer" onClick={handleCardClick}>
                            <div className="relative p-px rounded-2xl bg-gradient-to-b from-primary/50 to-accent/50 transition-all duration-300 hover:bg-gradient-to-b hover:from-primary hover:to-accent h-full">
-                                <div className="relative bg-gradient-to-b from-background to-secondary/50 rounded-2xl p-4 h-full">
+                                <div className="relative bg-gradient-to-b from-background to-secondary/50 rounded-2xl p-4 h-full flex flex-col">
                                     <div className="mb-3">
                                         {tool.icon}
                                     </div>
