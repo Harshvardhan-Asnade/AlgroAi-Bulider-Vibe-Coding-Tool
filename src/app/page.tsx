@@ -12,6 +12,7 @@ import PipelineSection from '@/components/landing/pipeline-section';
 import CtaSection from '@/components/landing/cta-section';
 import IntroAnimation from '@/components/landing/intro-animation';
 import BackgroundFx from '@/components/landing/background-fx';
+import ToolsSection from '@/components/landing/tools-section';
 
 function IntroWrapper({ children }: { children: React.ReactNode }) {
   const [showIntro, setShowIntro] = useState(true);
@@ -42,6 +43,7 @@ export default function Home() {
         <Header />
         <main className="flex w-full flex-col items-center z-10">
           <HeroSection />
+          <ToolsSection />
           <HowItWorks />
           <FeaturesSection />
           <PipelineSection />
