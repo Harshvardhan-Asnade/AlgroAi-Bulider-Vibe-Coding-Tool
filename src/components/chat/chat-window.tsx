@@ -247,16 +247,19 @@ function ActiveChat({ conversation, isLoading }: { conversation: Conversation, i
                     </motion.div>
                  )}
                 {isLoading && (
-                    <div className="flex items-start gap-4">
-                        <Avatar className="w-8 h-8 border border-primary/50 bg-primary/20 text-primary">
-                            <AvatarFallback className="bg-transparent"><Sparkles size={20} /></AvatarFallback>
-                        </Avatar>
-                        <div className="max-w-xl p-4 rounded-xl bg-secondary text-secondary-foreground">
-                            <div className="flex items-center gap-2">
-                                <span className="h-2 w-2 bg-primary rounded-full animate-pulse" style={{animationDelay: '0s'}} />
-                                <span className="h-2 w-2 bg-primary rounded-full animate-pulse" style={{animationDelay: '0.2s'}}/>
-                                <span className="h-2 w-2 bg-primary rounded-full animate-pulse" style={{animationDelay: '0.4s'}}/>
-                            </div>
+                    <div className="flex items-start gap-4 justify-center">
+                        <div className="loader-wrapper">
+                          <span className="loader-letter">G</span>
+                          <span className="loader-letter">e</span>
+                          <span className="loader-letter">n</span>
+                          <span className="loader-letter">e</span>
+                          <span className="loader-letter">r</span>
+                          <span className="loader-letter">a</span>
+                          <span className="loader-letter">t</span>
+                          <span className="loader-letter">i</span>
+                          <span className="loader-letter">n</span>
+                          <span className="loader-letter">g</span>
+                          <div className="loader"></div>
                         </div>
                     </div>
                 )}
@@ -314,5 +317,3 @@ export default function ChatWindow({ activeConversation, isLoading, onSendMessag
         </div>
     );
 }
-
-    
